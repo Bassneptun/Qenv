@@ -1,0 +1,3 @@
+/home/bassneptun/qtest_env/build/CMakeFiles/test.dir
+/home/bassneptun/qtest_env/build/CMakeFiles/edit_cache.dir
+/home/bassneptun/qtest_env/build/CMakeFiles/rebuild_cache.dir
