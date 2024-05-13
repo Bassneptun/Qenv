@@ -15,8 +15,8 @@ using std::string;
 struct ret_vals {
   union value {
     void* none;
-    valsr ret;
-    vals why;
+    Qbit::valsr ret;
+    Qbit::vals why;
     Qbit qbit;
   };
   uint8_t discriminator;
