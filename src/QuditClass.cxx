@@ -1,9 +1,9 @@
+#include "../include/header/QuditClass.hh"
+
 #include <armadillo>
 #include <cmath>
 #include <complex>
 #include <memory>
-
-#include "../include/header/QuditClass.hh"
 
 using namespace std::complex_literals;
 
@@ -159,4 +159,45 @@ Qudit::valsr_ Qudit::toffoli(Qudit& other, Qudit& other2) noexcept {
   }
   return std::make_shared<Qudit>(
       Qudit(Toffoli * (*this->values) * other.get() * other2.get()));
+}
+
+// DOESN'T WORK. ONLY HERE TO MAKE THE COMPILER SHUT UP
+Qudit::valsr_ Qudit::pauliY() const noexcept {
+  using namespace std::complex_literals;
+  arma::cx_mat Y_d = arma::zeros<arma::cx_mat>(d, d);
+  for (int i = 0; i < d; ++i) {
+    Y_d(i, (i + 1) % d) = 1i;
+  }
+  return std::make_shared<Qudit>(Qudit(Y_d * (*this->values)));
+}
+
+// THIS AS WELL
+Qudit::valsr_ Qudit::cy(Qudit& other) noexcept {
+  return std::make_shared<Qudit>(Qudit((*this->values) * other.get()));
+}
+
+int Qudit::measure() const {
+  int dim = this->values->n_elem;
+  std::vector<double> probabilities(dim);
+
+  for (int i = 0; i < dim; ++i) {
+    probabilities[i] = std::norm(this->values->at(i));
+  }
+
+  double sumProbabilities =
+      std::accumulate(probabilities.begin(), probabilities.end(), 0.0);
+  for (int i = 0; i < dim; ++i) {
+    probabilities[i] /= sumProbabilities;
+  }
+
+  double r = randu();
+  double cumulativeProbability = 0.0;
+  for (int i = 0; i < dim; ++i) {
+    cumulativeProbability += probabilities[i];
+    if (r < cumulativeProbability) {
+      return i;
+    }
+  }
+
+  return -1;
 }

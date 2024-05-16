@@ -3,9 +3,7 @@
 
 #include <functional>
 #include <string>
-#include <tuple>
 #include <unordered_map>
-#include <vector>
 
 #include "func_wrapper.hh"
 
@@ -16,11 +14,11 @@ extern std::unordered_map<string, std::function<uniform_return(uniform_input)>>
 
 class Instructions {
  public:
-  Instructions();
+  Instructions() {}
   ~Instructions() {}
   std::function<uniform_return(uniform_input)> operator[](std::string name);
 
-  std::vector<std::tuple<string, string>> getArgs(std::string name);
+  std::vector<std::tuple<std::string, std::string>> getArgs(std::string name);
 
  private:
   static std::unordered_map<std::string,

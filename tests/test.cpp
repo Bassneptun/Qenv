@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
 
-TEST(test, test) { EXPECT_EQ(1, 1); }
+#include "../include/header/Engine.hh"
+
+TEST(Engine, throws) {
+  EXPECT_ANY_THROW(Engine("/home/bassneptun/qtest_env/test.txt"));
+}
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

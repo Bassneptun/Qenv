@@ -7,6 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 include_directories(include)
 
 find_package(GTest REQUIRED)
+find_package(Armadillo REQUIRED)
+
+add_compile_options(-O2)
 
 if(NOT GTest_FOUND)
     message(FATAL_ERROR "Google Test not found. Please make sure it is installed.")
@@ -25,4 +28,4 @@ add_library(qtest_env::qtest_env ALIAS qtest_env)
 
 add_executable(tests tests/test.cpp)
 
-target_link_libraries(tests PRIVATE qtest_env::qtest_env GTest::GTest GTest::Main)
+target_link_libraries(tests PRIVATE qtest_env::qtest_env GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})

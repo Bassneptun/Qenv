@@ -9,12 +9,12 @@
 #include <vector>
 
 #include "../include/header/Instructions.hh"
-#include "/home/bassneptun/General-Purpose-Interpreter/include/header/rec_des.hh"
+#include "../include/header/qtils.hh"
 
 using std::string;
 
 Maybe::Maybe(string path, std::shared_ptr<Instructions> instructions)
-    : bytecode(getInput(path)), instructions(instructions) {}
+    : bytecode(Qtils::getInput(path)), instructions(instructions) {}
 
 std::string Maybe::operator[](int index) {
   if (index >= bytecode.size()) {

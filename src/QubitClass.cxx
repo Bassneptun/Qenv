@@ -6,6 +6,18 @@
 
 using std::complex;
 
+int Qbit::measure() const {
+  double p0 = std::norm(this->values->at(0));
+  double p1 = std::norm(this->values->at(1));
+
+  double r = randu();
+  if (r < p0) {
+    return 0;
+  } else {
+    return 1;
+  }
+}
+
 Qudit Qbit::combine(Qbit& q1) {
   auto temp = kron(*this->values, q1.get());
   return Qudit(temp);

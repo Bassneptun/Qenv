@@ -8,6 +8,7 @@
 #include "qtils.hh"
 
 using namespace arma;
+using namespace std::complex_literals;
 
 class Qbit {
  public:

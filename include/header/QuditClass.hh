@@ -6,6 +6,8 @@
 
 using namespace arma;
 
+using namespace std::complex_literals;
+
 class Qudit {
  public:
   typedef std::shared_ptr<Qudit> valsr_;
@@ -34,7 +36,6 @@ class Qudit {
   valsr_ toffoli(Qudit& other, Qudit& other2) noexcept;
   Qudit combine(Qudit& other) noexcept;
   int measure() const;
-  int measure_qudit() const;
 
   valsr_ getValues() const noexcept { return std::make_shared<Qudit>(*values); }
   cx_vec& get() noexcept { return *values; }

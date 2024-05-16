@@ -28,3 +28,13 @@ std::vector<std::string> Qtils::split(std::string s, std::string delimiter) {
   result.push_back(s);
   return result;
 }
+
+std::vector<std::string> Qtils::getInput(std::string path) {
+  std::ifstream file(path);
+  std::string line;
+  std::vector<std::string> result;
+  while (std::getline(file, line)) {
+    result.push_back(line);
+  }
+  return result;
+}
