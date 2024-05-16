@@ -1,41 +1,30 @@
 #ifndef INSTRUCTIONS_HH
 #define INSTRUCTIONS_HH
 
-#include <cstdint>
 #include <functional>
 #include <string>
 #include <tuple>
 #include <unordered_map>
 #include <vector>
 
-#include "QubitClass.hh"
+#include "func_wrapper.hh"
 
 using std::string;
 
-struct ret_vals {
-  union value {
-    void* none;
-    Qbit::valsr ret;
-    Qbit::vals why;
-    Qbit qbit;
-  };
-  uint8_t discriminator;
-};
-
-extern std::unordered_map<string, std::vector<std::function<void>>>
+extern std::unordered_map<string, std::function<uniform_return(uniform_input)>>
     instructions;
 
 class Instructions {
  public:
   Instructions();
   ~Instructions() {}
-  std::vector<std::function<struct ret_vals>> operator[](std::string name);
+  std::function<uniform_return(uniform_input)> operator[](std::string name);
 
   std::vector<std::tuple<string, string>> getArgs(std::string name);
 
  private:
   static std::unordered_map<std::string,
-                            std::vector<std::function<struct ret_vals>>>
+                            std::function<uniform_return(uniform_input)>>
       _instructions;
 
   static std::unordered_map<std::string,

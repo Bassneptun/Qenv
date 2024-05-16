@@ -1,24 +1,24 @@
+#include "../include/header/QubitClass.hh"
+
 #include <armadillo>
 #include <complex>
 #include <memory>
 
-#include "../include/header/QubitClass.hh"
-
 using std::complex;
 
-Qbit::valsr Qbit::combine(Qbit& q1) {
+Qudit Qbit::combine(Qbit& q1) {
   auto temp = kron(*this->values, q1.get());
-  return std::make_shared<Qbit>(Qbit(temp));
+  return Qudit(temp);
 }
 
-Qbit::valsr Qbit::combine(const vals q1) {
+Qudit Qbit::combine(const vals q1) {
   auto temp = kron(*values, *q1);
-  return std::make_shared<Qbit>(Qbit(temp));
+  return Qudit(temp);
 }
 
-Qbit::valsr Qbit::combine(const cx_vec& q1) {
+Qudit Qbit::combine(const cx_vec& q1) {
   auto temp = kron(*values, q1);
-  return std::make_shared<Qbit>(Qbit(temp));
+  return Qudit(temp);
 }
 
 Qbit::valsr Qbit::cnot(Qbit& other) {
@@ -28,7 +28,7 @@ Qbit::valsr Qbit::cnot(Qbit& other) {
 
   mat CNOT = Qtils::homo_cnot_operator(this->values->n_elem);
   auto combined = combine(other);
-  temp = CNOT * (*combined->getValues());
+  temp = CNOT * combined.get();
   return std::make_shared<Qbit>(Qbit(temp));
 }
 
@@ -40,7 +40,7 @@ Qbit::valsr Qbit::cnot(vals other) {
 
   mat CNOT = Qtils::homo_cnot_operator(this->values->n_elem);
   auto combined = combine(otherQ);
-  temp = CNOT * (*combined->getValues());
+  temp = CNOT * combined.get();
   return std::make_shared<Qbit>(Qbit(temp));
 }
 
@@ -161,7 +161,7 @@ Qbit::valsr Qbit::cy(Qbit& other) {
   cy_gate(3, 2) = cx_double(0, 1);
 
   auto combined = combine(other);
-  cx_vec temp = cy_gate * (*combined->getValues());
+  cx_vec temp = cy_gate * combined.get();
   return std::make_shared<Qbit>(Qbit(temp));
 }
 
@@ -172,7 +172,7 @@ Qbit::valsr Qbit::swap(Qbit& other) {
   cx_mat swap_mat = {{1, 0, 0, 0}, {0, 0, 1, 0}, {0, 1, 0, 0}, {0, 0, 0, 1}};
 
   auto combined = combine(other);
-  cx_vec temp = swap_mat * (*combined->getValues());
+  cx_vec temp = swap_mat * combined.get();
   return std::make_shared<Qbit>(Qbit(temp));
 }
 
@@ -208,8 +208,9 @@ Qbit::valsr Qbit::toffoli(Qbit& other1, Qbit& other2) {
   toffoli_mat(6, 7) = 1;
 
   auto combined1 = this->combine(other1);
-  auto combined = combined1->combine(other2);
-  cx_vec temp = toffoli_mat * (*combined->getValues());
+  auto other3 = Qudit(*other2.getValues());
+  auto combined = combined1.combine(other3);
+  cx_vec temp = toffoli_mat * combined.get();
   return std::make_shared<Qbit>(Qbit(temp));
 }
 
