@@ -1,3 +1,6 @@
+#ifndef FUNCTION_HH
+#define FUNCTION_HH
+
 #include <functional>
 
 #include "QubitClass.hh"
@@ -233,3 +236,15 @@ static uniform_return get(uniform_input in) {
       std::get<std::reference_wrapper<Qudit>>(in.vals[0]).get().get(), VEC};
 }
 }  // namespace QD_functions
+
+namespace G_functions {
+template <class Engine>
+static uniform_return declare(uniform_input in) {
+  auto reference = std::get<std::reference_wrapper<Engine>>(in.vals[0]).get();
+  auto nQ = Qbit();
+  reference.append(nQ, 1);
+  return uniform_return{nullptr, NONE};
+}
+}  // namespace G_functions
+
+#endif

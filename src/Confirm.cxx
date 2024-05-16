@@ -13,27 +13,36 @@
 
 using std::string;
 
-Maybe::Maybe(string path, std::shared_ptr<Instructions> instructions)
+template <class Engine>
+Maybe<Engine>::Maybe(string path,
+                     std::shared_ptr<Instructions<Engine>> instructions)
     : bytecode(Qtils::getInput(path)), instructions(instructions) {}
 
-std::string Maybe::operator[](int index) {
+template <class Engine>
+std::string Maybe<Engine>::operator[](int index) {
   if (index >= bytecode.size()) {
     throw std::out_of_range("Index out of range");
   }
   return bytecode[index];
 }
 
-std::vector<string> Maybe::operator()() { return bytecode; }
+template <class Engine>
+std::vector<string> Maybe<Engine>::operator()() {
+  return bytecode;
+}
 
-Maybe::iterator::iterator(Maybe* p, bool isEnd)
+template <class Engine>
+Maybe<Engine>::iterator::iterator(Maybe* p, bool isEnd)
     : p(p), it(isEnd ? p->bytecode.end() : p->bytecode.begin()) {}
 
-std::string Maybe::iterator::operator*() {
+template <class Engine>
+std::string Maybe<Engine>::iterator::operator*() {
   return (this->p->syntx_check(std::distance(p->bytecode.begin(), it))) ? *it
                                                                         : "\1";
 }
 
-Maybe::iterator& Maybe::iterator::operator++() {
+template <class Engine>
+typename Maybe<Engine>::iterator& Maybe<Engine>::iterator::operator++() {
   if (it == p->bytecode.end()) {
     throw std::out_of_range("Index out of range");
   }
@@ -44,9 +53,15 @@ Maybe::iterator& Maybe::iterator::operator++() {
   return *this;
 }
 
-Maybe::iterator Maybe::begin() { return iterator(this); }
+template <class Engine>
+typename Maybe<Engine>::iterator Maybe<Engine>::begin() {
+  return iterator(this);
+}
 
-Maybe::iterator Maybe::end() { return iterator(this, true); }
+template <class Engine>
+typename Maybe<Engine>::iterator Maybe<Engine>::end() {
+  return iterator(this, true);
+}
 
 /*
 bool Maybe::confirm() {
@@ -68,7 +83,8 @@ bool Maybe::confirm() {
 }
 */
 
-bool Maybe::syntx_check(size_t i) {
+template <class Engine>
+bool Maybe<Engine>::syntx_check(size_t i) {
   const auto& code = this->bytecode[i];
   auto firstSpacePos = std::find(code.begin(), code.end(), ' ');
   std::string operation(code.begin(), firstSpacePos);

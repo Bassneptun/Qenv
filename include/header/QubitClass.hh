@@ -22,7 +22,7 @@ class Qbit {
   explicit Qbit(std::unique_ptr<cx_vec> values) : values(std::move(values)) {}
   explicit Qbit(const Qbit& other)
       : values(std::make_unique<cx_vec>(*other.values)) {}
-  virtual ~Qbit() {}
+  ~Qbit() {}
   Qudit combine(const vals q1);
   Qudit combine(const cx_vec& q1);
   Qudit combine(Qbit& q1);

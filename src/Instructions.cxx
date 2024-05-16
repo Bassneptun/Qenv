@@ -7,18 +7,22 @@
 #include "../include/header/func_wrapper.hh"
 #include "../include/header/function.hh"
 
-std::function<uniform_return(uniform_input)> Instructions::operator[](
+template <class Engine>
+std::function<uniform_return(uniform_input)> Instructions<Engine>::operator[](
     std::string name) {
   return this->_instructions[name];
 }
 
-std::vector<std::tuple<std::string, std::string>> Instructions::getArgs(
+template <class Engine>
+std::vector<std::tuple<std::string, std::string>> Instructions<Engine>::getArgs(
     std::string name) {
   return this->arguments[name];
 }
 
+template <class Engine>
 std::unordered_map<std::string, std::function<uniform_return(uniform_input)>>
-    Instructions::_instructions{
+    Instructions<Engine>::_instructions{
+        {"DCL", std::bind<Engine>(G_functions::declare, std::placeholders::_1)},
         {"HAD", std::bind(QB_functions::haddamard, std::placeholders::_1)},
         {"CR", std::bind(QB_functions::cr, std::placeholders::_1)},
         {"PX", std::bind(QB_functions::pauliX, std::placeholders::_1)},
@@ -59,9 +63,10 @@ std::unordered_map<std::string, std::function<uniform_return(uniform_input)>>
         {"DGET", std::bind(QD_functions::get, std::placeholders::_1)},
     };
 
+template <class Engine>
 std::unordered_map<std::string,
                    std::vector<std::tuple<std::string, std::string>>>
-    Instructions::arguments{
+    Instructions<Engine>::arguments{
         {"HAD", {{"Qubit", "Qubit"}}},
         {"CR", {{"Qubit", "Qubit"}}},
         {"PX", {{"Qubit", "Qubit"}}},
