@@ -9,7 +9,9 @@
 #include "QubitClass.hh"
 #include "QuditClass.hh"
 
-enum types { BOOL, INT, QBIT, QUDIT, QBITVALS, QBITVALSR, NONE, VEC };
+typedef std::vector<std::vector<Qbit>> memory__;
+
+enum types { BOOL, INT, QBIT, QUDIT, QBITVALS, QBITVALSR, NONE, VEC, MEM };
 
 struct uniform_return {
   std::variant<bool, int, Qbit, Qudit, Qbit::vals, Qbit::valsr, void*, cx_vec>
@@ -20,9 +22,9 @@ struct uniform_return {
 enum in_types { DOUBLE, QUBIT, QUDIT_, CX_VEC };
 
 struct uniform_input {
-  std::vector<std::variant<double, std::reference_wrapper<Qudit>,
-                           std::reference_wrapper<Qbit>,
-                           std::reference_wrapper<cx_vec>>>
+  std::vector<std::variant<
+      double, std::reference_wrapper<Qudit>, std::reference_wrapper<Qbit>,
+      std::reference_wrapper<cx_vec>, std::reference_wrapper<memory__>>>
       vals;
   std::vector<in_types> types;
 };

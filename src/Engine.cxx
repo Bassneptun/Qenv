@@ -14,15 +14,8 @@ void Engine::execute() {
   reverse(words.begin(), words.end());
   for (auto word : words) {
     if (std::regex_match(word, std::regex("$\\w+"))) {
-      if (this->variables.at(word).first == 0) {
-        in.vals.push_back(this->registers[this->variables.at(word).second]);
-      } else if (this->variables.at(word).first == 1) {
-        in.vals.push_back(this->stack[this->variables.at(word).second]);
-      } else if (this->variables.at(word).first == 2) {
-        in.vals.push_back(this->heap[this->variables.at(word).second]);
-      } else if (this->variables.at(word).first == 3) {
-        in.vals.push_back(this->globals[this->variables.at(word).second]);
-      }
+      in.vals.push_back(this->memory[this->variables.at(word).first]
+                                    [this->variables.at(word).second]);
     }
   }
 

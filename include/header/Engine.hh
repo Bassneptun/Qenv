@@ -1,7 +1,6 @@
 #ifndef ENGINE_HH
 #define ENGINE_HH
 
-#include <array>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -16,7 +15,7 @@
 class Engine {
  public:
   Engine(std::string path)
-      : instructions(),
+      : instructions(this->memory),
         bytecode(path, std::make_shared<Instructions>(this->instructions)),
         it(bytecode.begin()) {}
   ~Engine() {}
@@ -32,10 +31,7 @@ class Engine {
   std::unordered_map<std::string, std::pair<uint8_t, size_t>>
       variables;  // map variable names to place and index
 
-  std::array<Qbit, 12> registers;
-  std::vector<Qbit> stack;
-  std::vector<Qbit> heap;
-  std::vector<Qbit> globals;
+  std::vector<std::vector<Qbit>> memory;
 };
 
 #endif

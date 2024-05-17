@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 
 #include "func_wrapper.hh"
@@ -12,13 +13,17 @@ using std::string;
 extern std::unordered_map<string, std::function<uniform_return(uniform_input)>>
     instructions;
 
+using memory_ = std::vector<std::vector<Qbit>>;
+
 class Instructions {
  public:
-  Instructions() {}
+  Instructions(memory_& memory) : memory(memory) {}
   ~Instructions() {}
   std::function<uniform_return(uniform_input)> operator[](std::string name);
 
   std::vector<std::tuple<std::string, std::string>> getArgs(std::string name);
+
+  memory_& memory;
 
  private:
   static std::unordered_map<std::string,
