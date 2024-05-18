@@ -190,7 +190,7 @@ int Qudit::measure() const {
     probabilities[i] /= sumProbabilities;
   }
 
-  double r = randu();
+  double r = randn();
   double cumulativeProbability = 0.0;
   for (int i = 0; i < dim; ++i) {
     cumulativeProbability += probabilities[i];

@@ -12,6 +12,7 @@ class Qtils {
   static mat homo_cnot_operator(const int);
   static std::vector<std::string> split(std::string, std::string);
   static std::vector<std::string> getInput(std::string path);
+  static cx_vec partial_trace(const cx_mat&, std::vector<int>);
 };
 
 #endif

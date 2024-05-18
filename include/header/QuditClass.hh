@@ -2,6 +2,7 @@
 #define QUDITCLASS_H
 
 #include <armadillo>
+#include <iostream>
 #include <memory>
 
 using namespace arma;
@@ -12,9 +13,10 @@ class Qudit {
  public:
   typedef std::shared_ptr<Qudit> valsr_;
 
-  explicit Qudit(const cx_vec& values) {}
-  explicit Qudit() {}
-  explicit Qudit(std::unique_ptr<cx_vec> values) {}
+  explicit Qudit(const cx_vec& values)
+      : values(std::make_unique<cx_vec>(values)) {}
+  explicit Qudit() : values(std::make_unique<cx_vec>()) {}
+  explicit Qudit(std::unique_ptr<cx_vec> values) : values(std::move(values)) {}
 
   valsr_ cnot(Qudit& other) noexcept;
   valsr_ haddamard() const noexcept;
@@ -38,7 +40,7 @@ class Qudit {
   int measure() const;
 
   valsr_ getValues() const noexcept { return std::make_shared<Qudit>(*values); }
-  cx_vec& get() noexcept { return *values; }
+  cx_vec get() noexcept { return *this->values; }
 
  private:
   std::unique_ptr<cx_vec>

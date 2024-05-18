@@ -20,7 +20,6 @@ std::vector<std::tuple<std::string, std::string>> Instructions::getArgs(
 std::unordered_map<std::string, std::function<uniform_return(uniform_input)>>
     Instructions::_instructions{
         {"HAD", std::bind(QB_functions::haddamard, std::placeholders::_1)},
-        {"CR", std::bind(QB_functions::cr, std::placeholders::_1)},
         {"PX", std::bind(QB_functions::pauliX, std::placeholders::_1)},
         {"PY", std::bind(QB_functions::pauliY, std::placeholders::_1)},
         {"PZ", std::bind(QB_functions::pauliZ, std::placeholders::_1)},
@@ -36,7 +35,6 @@ std::unordered_map<std::string, std::function<uniform_return(uniform_input)>>
         {"CY", std::bind(QB_functions::cy, std::placeholders::_1)},
         {"SWP", std::bind(QB_functions::swap, std::placeholders::_1)},
         {"MES", std::bind(QB_functions::measure, std::placeholders::_1)},
-        {"CRK", std::bind(QB_functions::crk, std::placeholders::_1)},
         {"GET", std::bind(QB_functions::get, std::placeholders::_1)},
         {"DHAD", std::bind(QD_functions::haddamard, std::placeholders::_1)},
         {"DCR", std::bind(QD_functions::cr, std::placeholders::_1)},

@@ -33,7 +33,7 @@ Qudit Qbit::combine(const cx_vec& q1) {
   return Qudit(temp);
 }
 
-Qbit::valsr Qbit::cnot(Qbit& other) {
+Qudit Qbit::cnot(Qbit& other) {
   cx_vec temp;
   if (this->values->n_elem != other.values->n_elem)
     throw std::invalid_argument("Qudits must be the same size");
@@ -41,10 +41,10 @@ Qbit::valsr Qbit::cnot(Qbit& other) {
   mat CNOT = Qtils::homo_cnot_operator(this->values->n_elem);
   auto combined = combine(other);
   temp = CNOT * combined.get();
-  return std::make_shared<Qbit>(Qbit(temp));
+  return Qudit(temp);
 }
 
-Qbit::valsr Qbit::cnot(vals other) {
+Qudit Qbit::cnot(vals other) {
   cx_vec temp;
   Qbit otherQ(std::move(other));  // move other to Qbit other);
   if (this->values->n_elem != otherQ.values->n_elem)
@@ -53,7 +53,7 @@ Qbit::valsr Qbit::cnot(vals other) {
   mat CNOT = Qtils::homo_cnot_operator(this->values->n_elem);
   auto combined = combine(otherQ);
   temp = CNOT * combined.get();
-  return std::make_shared<Qbit>(Qbit(temp));
+  return Qudit(temp);
 }
 
 Qbit::valsr Qbit::haddamard() const {
@@ -68,7 +68,7 @@ Qbit::valsr Qbit::pauliX() const {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
-  cx_vec temp = {{0, 1}, {1, 0}};
+  mat temp = {{0, 1}, {1, 0}};
   return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
 }
 
@@ -85,7 +85,7 @@ Qbit::valsr Qbit::pauliZ() const {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
-  cx_vec temp = {{1, 0}, {0, -1}};
+  mat temp = {{1, 0}, {0, -1}};
   return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
 }
 
@@ -93,7 +93,7 @@ Qbit::valsr Qbit::identity() const {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
-  cx_vec temp = {{1, 0}, {0, 1}};
+  mat temp = {{1, 0}, {0, 1}};
   return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
 }
 
@@ -162,7 +162,7 @@ Qbit::valsr Qbit::T_dag() const {
 
 // Controlled-Y Gate: Applies a Pauli Y gate to the target if the control is in
 // state |1>
-Qbit::valsr Qbit::cy(Qbit& other) {
+Qudit Qbit::cy(Qbit& other) {
   if (this->values->n_elem != other.values->n_elem) {
     throw std::invalid_argument("Qudits must be the same size");
   }
@@ -174,7 +174,7 @@ Qbit::valsr Qbit::cy(Qbit& other) {
 
   auto combined = combine(other);
   cx_vec temp = cy_gate * combined.get();
-  return std::make_shared<Qbit>(Qbit(temp));
+  return Qudit(temp);
 }
 
 Qbit::valsr Qbit::swap(Qbit& other) {
@@ -193,22 +193,7 @@ Qbit::valsr Qbit::swap(const cx_vec& q1) {
   return swap(otherQ);
 }
 
-Qbit::valsr Qbit::cr(double angle) const {
-  if (this->values->n_elem != 2) {
-    throw std::invalid_argument("Input must be a qubit");
-  }
-  cx_double phi = exp(cx_double(0, angle));
-  cx_mat cr_mat = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, phi}};
-
-  return std::make_shared<Qbit>(Qbit(cr_mat * (*this->values)));
-}
-
-Qbit::valsr Qbit::crk(double k) const {
-  double angle = M_PI * k;  // Convert fraction of π to radians
-  return cr(angle);         // Reuse the controlled rotation function
-}
-
-Qbit::valsr Qbit::toffoli(Qbit& other1, Qbit& other2) {
+Qudit Qbit::toffoli(Qbit& other1, Qbit& other2) {
   if (this->values->n_elem != 2 || other1.values->n_elem != 2 ||
       other2.values->n_elem != 2) {
     throw std::invalid_argument("All inputs must be qubits");
@@ -223,10 +208,10 @@ Qbit::valsr Qbit::toffoli(Qbit& other1, Qbit& other2) {
   auto other3 = Qudit(*other2.getValues());
   auto combined = combined1.combine(other3);
   cx_vec temp = toffoli_mat * combined.get();
-  return std::make_shared<Qbit>(Qbit(temp));
+  return Qudit(temp);
 }
 
-Qbit::valsr Qbit::toffoli(const cx_vec& q1, const cx_vec& q2) {
+Qudit Qbit::toffoli(const cx_vec& q1, const cx_vec& q2) {
   Qbit otherQ1(q1);
   Qbit otherQ2(q2);
   return toffoli(otherQ1, otherQ2);

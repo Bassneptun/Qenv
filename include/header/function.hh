@@ -10,13 +10,6 @@ static uniform_return haddamard(uniform_input in) {
   return uniform_return{nullptr, NONE};
 }
 
-static uniform_return cr(uniform_input in) {
-  std::get<std::reference_wrapper<Qbit>>(in.vals[0])
-      .get()
-      .cr(std::get<double>(in.vals[1]));
-  return uniform_return{nullptr, NONE};
-}
-
 static uniform_return pauliX(uniform_input in) {
   std::get<std::reference_wrapper<Qbit>>(in.vals[0]).get().pauliX();
   return uniform_return{nullptr, NONE};
@@ -104,13 +97,6 @@ static uniform_return measure(uniform_input in) {
   auto temp =
       std::get<std::reference_wrapper<Qbit>>(in.vals[0]).get().measure();
   return uniform_return{temp, INT};
-}
-
-static uniform_return crk(uniform_input in) {
-  std::get<std::reference_wrapper<Qbit>>(in.vals[0])
-      .get()
-      .crk(std::get<double>(in.vals[1]));
-  return uniform_return{nullptr, NONE};
 }
 
 static uniform_return get(uniform_input in) {
