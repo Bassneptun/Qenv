@@ -101,8 +101,8 @@ Qbit::valsr Qbit::rx(double angle) const {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
-  cx_mat temp = {{cos(angle / 2), complex(-1.0, -sin(angle / 2))},
-                 {complex(-1.0, -sin(angle / 2)), cos(angle / 2)}};
+  cx_mat temp = {{cos(angle / 2), complex(sin(angle / 2), -1.0)},
+                 {complex(sin(angle / 2), -1.), cos(angle / 2)}};
   return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
 }
 
@@ -110,7 +110,7 @@ Qbit::valsr Qbit::ry(double angle) const {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
-  cx_vec temp = {{cos(angle / 2), -sin(angle / 2)},
+  cx_mat temp = {{complex(cos(angle / 2)), -sin(angle / 2)},
                  {sin(angle / 2), cos(angle / 2)}};
   return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
 }
@@ -119,8 +119,8 @@ Qbit::valsr Qbit::rz(double angle) const {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
-  cx_mat temp = {{exp(complex(-1.0, angle / 2)), complex(0.0, 0.0)},
-                 {complex(0.0, 0.0), exp(complex(1.0, angle / 2))}};
+  cx_mat temp = {{exp(complex(angle / 2, -1.0)), complex(0.0, 0.0)},
+                 {complex(0.0, 0.0), exp(complex(angle / 2, 1.))}};
   return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
 }
 

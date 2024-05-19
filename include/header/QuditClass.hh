@@ -2,7 +2,6 @@
 #define QUDITCLASS_H
 
 #include <armadillo>
-#include <iostream>
 #include <memory>
 
 using namespace arma;

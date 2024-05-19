@@ -3,7 +3,6 @@
 #include <armadillo>
 #include <cmath>
 #include <complex>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -141,10 +140,80 @@ TEST(QUBITD, COMBINE_2) {
 TEST(QUBITD, CNOT) {
   auto q1 = Qbit({1 / sqrt(2), 1 / sqrt(2)});
   auto q2 = Qbit({1 / sqrt(2), 1 / sqrt(2)});
+  auto comp = Qbit({0.5, 0.5, 0.5, 0.5});
   EXPECT_NO_THROW(q1.cnot(q2));
   EXPECT_TRUE(q1.cnot(q2).get().n_elem == 4);
-  std::cout << vector_to_string(to_vector(q1.cnot(q2).get()));
-  EXPECT_EQ(q1.cnot(q2).measure(), 1);
+  EXPECT_TRUE(vectors_are_close(to_vector(q1.cnot(q2).get()),
+                                to_vector(comp.get()), TOLERANCE))
+      << vector_to_string(to_vector(q1.cnot(q2).get()));
+}
+
+TEST(QUBITD, TOFFOLI) {
+  auto q1 = Qbit({1 / sqrt(2), 1 / sqrt(2)});
+  auto q2 = Qbit({1 / sqrt(2), 1 / sqrt(2)});
+  auto q3 = Qbit({1 / sqrt(2), 1 / sqrt(2)});
+  auto comp = Qbit({0.353553, 0.353553, 0.353553, 0.353553, 0.353553, 0.353553,
+                    0.353553, 0.353553});
+  EXPECT_NO_THROW(q1.toffoli(q2, q3));
+  EXPECT_TRUE(q1.toffoli(q2, q3).get().n_elem == 8);
+  EXPECT_TRUE(vectors_are_close(to_vector(q1.toffoli(q2, q3).get()),
+                                to_vector(comp.get()), TOLERANCE))
+      << vector_to_string(to_vector(q1.toffoli(q2, q3).get()));
+}
+
+TEST(QUBITD, CY) {
+  auto q1 = Qbit({1 / sqrt(2), 1 / sqrt(2)});
+  auto q2 = Qbit({1 / sqrt(2), 1 / sqrt(2)});
+  auto comp = Qbit({std::complex(.5), std::complex(.5), std::complex(0., -.5),
+                    std::complex(0., .5)});
+  EXPECT_NO_THROW(q1.cy(q2));
+  EXPECT_TRUE(q1.cy(q2).get().n_elem == 4);
+  EXPECT_TRUE(vectors_are_close(to_vector(q1.cy(q2).get()),
+                                to_vector(comp.get()), TOLERANCE))
+      << vector_to_string(to_vector(q1.cy(q2).get()));
+}
+
+TEST(QUBITD, SWAP) {
+  auto q1 = Qbit({1 / sqrt(2), 1 / sqrt(2)});
+  auto q2 = Qbit({1 / sqrt(2), 1 / sqrt(2)});
+  auto comp = Qbit({0.5, 0.5, 0.5, 0.5});
+  EXPECT_NO_THROW(q1.swap(q2));
+  EXPECT_TRUE(q1.swap(q2).get()->get().n_elem == 4);
+  EXPECT_TRUE(vectors_are_close(to_vector(q1.swap(q2).get()->get()),
+                                to_vector(comp.get()), TOLERANCE))
+      << vector_to_string(to_vector(q1.swap(q2).get()->get()));
+}
+
+TEST(QUBITF, RX) {
+  auto q = Qbit({1 / sqrt(2), 1 / sqrt(2)});
+  auto comp = Qbit({std::complex(.95954963, -0.7071067812),
+                    std::complex(.95954963, -0.7071067812)});
+  EXPECT_NO_THROW(q.rx(1));
+  EXPECT_TRUE(q.rx(1.).get()->get().n_elem == 2);
+  EXPECT_TRUE(vectors_are_close(to_vector(*q.rx(1.)->getValues()),
+                                to_vector(comp.get()), TOLERANCE))
+      << vector_to_string(to_vector(*q.rx(1.)->getValues())) << "\n";
+}
+
+TEST(QUBITF, RY) {
+  auto q = Qbit({1 / sqrt(2), 1 / sqrt(2)});
+  auto comp = Qbit({0.2815395311, 0.95954963});
+  EXPECT_NO_THROW(q.ry(1.57));
+  EXPECT_TRUE(q.ry(1).get()->get().n_elem == 2);
+  EXPECT_TRUE(vectors_are_close(to_vector(q.ry(1).get()->get()),
+                                to_vector(comp.get()), TOLERANCE))
+      << vector_to_string(to_vector(q.ry(1).get()->get()));
+}
+
+TEST(QUBITF, RZ) {
+  auto q = Qbit({1 / sqrt(2), 1 / sqrt(2)});
+  auto comp = Qbit(
+      {std::complex(0.629896, -0.981005), std::complex(0.629896, 0.981005)});
+  EXPECT_NO_THROW(q.rz(1));
+  EXPECT_TRUE(q.rz(1).get()->get().n_elem == 2);
+  EXPECT_TRUE(vectors_are_close(to_vector(*q.rz(1)->getValues()),
+                                to_vector(comp.get()), TOLERANCE))
+      << vector_to_string(to_vector(*q.rz(1)->getValues()));
 }
 
 int main(int argc, char* argv[]) {

@@ -29,11 +29,15 @@ add_library(qenv::qenv ALIAS qenv)
 add_executable(tests tests/test.cpp)
 add_executable(utils_test tests/utils.cpp)
 add_executable(gates_test tests/gates.cpp)
+add_executable(QD_gates tests/QD_gates.cpp)
+
 
 target_link_libraries(tests PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
 
 target_link_libraries(utils_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
 
 target_link_libraries(gates_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
+
+target_link_libraries(QD_gates PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
 
 add_custom_target(execute_all_tests ALL COMMAND /home/bassneptun/qtest_env/execute_all_tests.sh WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
