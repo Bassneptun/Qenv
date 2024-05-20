@@ -13,12 +13,13 @@ class Qudit {
   typedef std::shared_ptr<Qudit> valsr_;
 
   explicit Qudit(const cx_vec& values)
-      : values(std::make_unique<cx_vec>(values)) {}
-  explicit Qudit() : values(std::make_unique<cx_vec>()) {}
-  explicit Qudit(std::unique_ptr<cx_vec> values) : values(std::move(values)) {}
+      : values(std::make_unique<cx_vec>(values)), d(values.n_elem) {}
+  explicit Qudit() : values(std::make_unique<cx_vec>()), d(0) {}
+  explicit Qudit(std::unique_ptr<cx_vec> values)
+      : values(std::move(values)), d(values->n_elem) {}
 
   valsr_ cnot(Qudit& other) noexcept;
-  valsr_ haddamard() const noexcept;
+  valsr_ haddamard() const;
   valsr_ pauliX() const noexcept;
   valsr_ pauliY() const noexcept;
   valsr_ pauliZ() const noexcept;
@@ -34,7 +35,7 @@ class Qudit {
   valsr_ swap(Qudit& other) noexcept;
   valsr_ cr(double angle) const noexcept;
   valsr_ crk(double angle) const noexcept;
-  valsr_ toffoli(Qudit& other, Qudit& other2) noexcept;
+  valsr_ toffoli(Qudit& other, Qudit& other2);
   Qudit combine(Qudit& other) noexcept;
   int measure() const;
 

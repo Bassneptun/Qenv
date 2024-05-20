@@ -5,23 +5,34 @@
 #include <complex>
 #include <memory>
 
+#include "../include/header/qtils.hh"
+
 using namespace std::complex_literals;
 
 Qudit Qudit::combine(Qudit& other2) noexcept {
   return Qudit(kron(*this->values, other2.get()));
 }
 
-Qudit::valsr_ Qudit::haddamard() const noexcept {
-  cx_mat Fourier_haddamard(this->d, this->d);
-  const double d_sqtr = sqrt(this->d);
-  for (int i = 0; i < this->d; ++i) {
-    for (int j = 0; j < this->d; ++j) {
-      Fourier_haddamard(i, j) =
-          std::exp(-std::complex<double>(0, 2 * M_PI * i * j / this->d)) /
-          d_sqtr;
-    }
+Qudit::valsr_ Qudit::cnot(Qudit& other) noexcept {
+  cx_vec temp;
+
+  mat CNOT = Qtils::homo_cnot_operator(this->values->n_elem);
+  auto combined = combine(other);
+  temp = CNOT * combined.get();
+  return std::make_shared<Qudit>(Qudit(temp));
+}
+
+Qudit::valsr_ Qudit::haddamard() const {
+  mat had = {{1., 1.}, {1., -1.}};
+  if (this->values->n_elem == 2) {
+    return std::make_shared<Qudit>(had * (*this->values));
   }
-  return std::make_shared<Qudit>(Qudit(Fourier_haddamard * (*this->values)));
+  auto qb = log(d) / log(2);
+  mat temp = kron(had, had);
+  for (int i = 2; i < qb; ++i) {
+    temp = kron(temp, had);
+  }
+  return std::make_shared<Qudit>(temp * (*this->values));
 }
 
 Qudit::valsr_ Qudit::pauliX() const noexcept {
@@ -43,7 +54,7 @@ Qudit::valsr_ Qudit::pauliZ() const noexcept {
 }
 
 Qudit::valsr_ Qudit::identity() const noexcept {
-  return std::make_shared<Qudit>(Qudit(eye<cx_mat>(d, d)));
+  return std::make_shared<Qudit>(*this->values);
 }
 
 Qudit::valsr_ Qudit::rx(double angle) const noexcept {
@@ -142,7 +153,7 @@ Qudit::valsr_ Qudit::crk(double k) const noexcept {
   return std::make_shared<Qudit>(Qudit(CRk * (*this->values)));
 }
 
-Qudit::valsr_ Qudit::toffoli(Qudit& other, Qudit& other2) noexcept {
+Qudit::valsr_ Qudit::toffoli(Qudit& other, Qudit& other2) {
   using namespace std::complex_literals;
   int d3 = d * d * d;
   arma::cx_mat Toffoli = arma::eye<arma::cx_mat>(d3, d3);
