@@ -101,8 +101,11 @@ Qbit::valsr Qbit::rx(double angle) const {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
-  cx_mat temp = {{cos(angle / 2), complex(sin(angle / 2), -1.0)},
-                 {complex(sin(angle / 2), -1.), cos(angle / 2)}};
+  double cos_half_angle = std::cos(angle / 2);
+  double sin_half_angle = std::sin(angle / 2);
+  arma::cx_mat temp = {
+      {cos_half_angle, -std::complex<double>(0, 1.0) * sin_half_angle},
+      {-std::complex<double>(0, 1.0) * sin_half_angle, cos_half_angle}};
   return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
 }
 

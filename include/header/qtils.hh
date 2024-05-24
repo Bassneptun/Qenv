@@ -13,6 +13,9 @@ class Qtils {
   static std::vector<std::string> split(std::string, std::string);
   static std::vector<std::string> getInput(std::string path);
   static cx_vec partial_trace(const cx_mat&, std::vector<int>);
+  static cx_mat homo_pauliX_operator(int);
+  // static cx_mat homo_pauliY_operator(int);
+  static cx_mat homo_pauliZ_operator(int);
 };
 
 #endif

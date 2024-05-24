@@ -9,7 +9,7 @@ include_directories(include)
 find_package(GTest REQUIRED)
 find_package(Armadillo REQUIRED)
 
-add_compile_options(-O2)
+add_compile_options(-O2 --debug)
 
 if(NOT GTest_FOUND)
     message(FATAL_ERROR "Google Test not found. Please make sure it is installed.")
@@ -26,13 +26,12 @@ add_library(qenv STATIC
 
 add_library(qenv::qenv ALIAS qenv)
 
-add_executable(tests tests/test.cpp)
+add_executable(confirm_test tests/confirm_.cpp)
 add_executable(utils_test tests/utils.cpp)
 add_executable(gates_test tests/gates.cpp)
 add_executable(QD_gates_test tests/QD_gates.cpp)
 
-
-target_link_libraries(tests PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
+target_link_libraries(confirm_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
 
 target_link_libraries(utils_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
 

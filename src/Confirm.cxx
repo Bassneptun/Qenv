@@ -29,15 +29,16 @@ Maybe::iterator::iterator(Maybe* p, bool isEnd)
     : p(p), it(isEnd ? p->bytecode.end() : p->bytecode.begin()) {}
 
 std::string Maybe::iterator::operator*() {
-  return (this->p->syntx_check(std::distance(p->bytecode.begin(), it))) ? *it
-                                                                        : "\1";
+  return (this->p->syntax_check(std::distance(p->bytecode.begin(), it) + 1))
+             ? *it
+             : "\1";
 }
 
 Maybe::iterator& Maybe::iterator::operator++() {
   if (it == p->bytecode.end()) {
     throw std::out_of_range("Index out of range");
   }
-  if (!this->p->syntx_check(std::distance(p->bytecode.begin(), it) + 1)) {
+  if (!this->p->syntax_check(std::distance(p->bytecode.begin(), it) + 1)) {
     throw std::runtime_error("Syntax error");
   }
   it++;
@@ -68,10 +69,14 @@ bool Maybe::confirm() {
 }
 */
 
-bool Maybe::syntx_check(size_t i) {
+bool Maybe::syntax_check(size_t i) {
   const auto& code = this->bytecode[i];
   auto firstSpacePos = std::find(code.begin(), code.end(), ' ');
   std::string operation(code.begin(), firstSpacePos);
+
+  if (this->instructions->getArgs(operation).empty()) {
+    return false;
+  }
 
   size_t numArgs = this->instructions->getArgs(operation).size();
 
@@ -80,7 +85,28 @@ bool Maybe::syntx_check(size_t i) {
   if (!std::regex_match(code, std::regex(pattern))) {
     return false;
   }
+
   return true;
+}
+
+Maybe::iterator& Maybe::iterator::operator=(const Maybe::iterator& other) {
+  if (this == &other) {
+    return *this;
+  }
+
+  this->p = other.p;
+  this->it = other.it;
+
+  return *this;
+}
+
+Maybe::iterator& Maybe::iterator::operator+(const int scnd) {
+  try {
+    this->it = this->it + scnd;
+  } catch (std::out_of_range s) {
+    throw std::out_of_range("out of bounds");
+  }
+  return *this;
 }
 
 /*

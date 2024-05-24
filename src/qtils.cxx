@@ -38,3 +38,30 @@ std::vector<std::string> Qtils::getInput(std::string path) {
   }
   return result;
 }
+
+// TEMPORARY
+cx_vec Qtils::partial_trace(const cx_mat &M, std::vector<int> indices) {
+  cx_vec result = zeros<cx_vec>(M.n_cols);
+  for (int i = 0; i < indices.size(); ++i) {
+    result = result + M.col(indices[i]);
+  }
+  return result;
+}
+
+cx_mat Qtils::homo_pauliX_operator(int d) {
+  arma::cx_mat X_d = arma::zeros<arma::cx_mat>(d, d);
+  for (int i = 0; i < d; ++i) {
+    X_d(i, (i + 1) % d) = 1;
+  }
+  return X_d;
+}
+
+cx_mat Qtils::homo_pauliZ_operator(int d) {
+  using namespace std::complex_literals;
+  arma::cx_mat Z_d = arma::zeros<arma::cx_mat>(d, d);
+  std::complex<double> omega = std::exp(2.0i * M_PI / std::complex<double>(d));
+  for (int i = 0; i < d; ++i) {
+    Z_d(i, i) = std::pow(omega, i);
+  }
+  return Z_d;
+}

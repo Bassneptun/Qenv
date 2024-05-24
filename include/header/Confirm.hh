@@ -24,6 +24,8 @@ class Maybe {
     ~iterator() {}
     std::string operator*();
     iterator& operator++();
+    iterator& operator=(const iterator& other);
+    iterator& operator+(const int);
 
    private:
     Maybe* p;
@@ -33,7 +35,7 @@ class Maybe {
   iterator begin();
   iterator end();
 
-  bool syntx_check(size_t index = 0);
+  bool syntax_check(size_t index = 0);
   // bool typecheck(size_t index = 0);
 
  private:

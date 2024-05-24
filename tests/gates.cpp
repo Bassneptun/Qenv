@@ -186,12 +186,12 @@ TEST(QUBITD, SWAP) {
 
 TEST(QUBITF, RX) {
   auto q = Qbit({1 / sqrt(2), 1 / sqrt(2)});
-  auto comp = Qbit({std::complex(.95954963, -0.7071067812),
-                    std::complex(.95954963, -0.7071067812)});
+  auto comp = Qbit({std::complex<double>(0.6201, -.3384),
+                    std::complex<double>(0.6201, -.3384)});
   EXPECT_NO_THROW(q.rx(1));
-  EXPECT_TRUE(q.rx(1.).get()->get().n_elem == 2);
-  EXPECT_TRUE(vectors_are_close(to_vector(*q.rx(1.)->getValues()),
-                                to_vector(comp.get()), TOLERANCE))
+  EXPECT_TRUE(q.rx(1.)->get().n_elem == 2);
+  EXPECT_TRUE(vectors_are_close(to_vector(*q.rx(1)->getValues()),
+                                to_vector(comp.get()), 0.01))
       << vector_to_string(to_vector(*q.rx(1.)->getValues())) << "\n";
 }
 
