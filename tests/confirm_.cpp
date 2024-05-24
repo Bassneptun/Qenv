@@ -11,16 +11,18 @@
 
 TEST(CONFIRM, INIT) {
   std::vector<std::vector<Qbit>> tmp;
-  EXPECT_NO_THROW(
-      Maybe("file.txt", std::make_shared<Instructions>(Instructions(tmp))););
+  vars tmp2;
+  EXPECT_NO_THROW(Maybe("file.txt", std::make_shared<Instructions>(
+                                        Instructions(tmp, tmp2))););
 }
 
 TEST(CONFIRM, SYNTAX_CHECK) {
   std::vector<std::vector<Qbit>> tmp;
-  EXPECT_NO_THROW(
-      Maybe("file.txt", std::make_shared<Instructions>(Instructions(tmp))););
+  vars tmp2;
+  EXPECT_NO_THROW(Maybe("file.txt", std::make_shared<Instructions>(
+                                        Instructions(tmp, tmp2))););
   auto a = Maybe("/home/bassneptun/qtest_env/tests/file.txt",
-                 std::make_shared<Instructions>(Instructions(tmp)));
+                 std::make_shared<Instructions>(Instructions(tmp, tmp2)));
   EXPECT_NO_THROW(Maybe::iterator b = a.begin());
   Maybe::iterator b = a.begin();
 
@@ -30,10 +32,11 @@ TEST(CONFIRM, SYNTAX_CHECK) {
 
 TEST(CONFIRM, SYNTAX_CHECK_FALSE) {
   std::vector<std::vector<Qbit>> tmp;
-  EXPECT_NO_THROW(
-      Maybe("file.txt", std::make_shared<Instructions>(Instructions(tmp))););
+  vars tmp2;
+  EXPECT_NO_THROW(Maybe("file.txt", std::make_shared<Instructions>(
+                                        Instructions(tmp, tmp2))););
   auto a = Maybe("/home/bassneptun/qtest_env/tests/file.txt",
-                 std::make_shared<Instructions>(Instructions(tmp)));
+                 std::make_shared<Instructions>(Instructions(tmp, tmp2)));
   EXPECT_NO_THROW(Maybe::iterator b = a.begin());
   Maybe::iterator b = a.begin() + 2;
 
@@ -43,9 +46,11 @@ TEST(CONFIRM, SYNTAX_CHECK_FALSE) {
 
 TEST(MAYBE_ITERATOR, INIT) {
   std::vector<std::vector<Qbit>> tmp;
-  EXPECT_NO_THROW(
-      Maybe("file.txt", std::make_shared<Instructions>(Instructions(tmp))););
-  auto a = Maybe("file.txt", std::make_shared<Instructions>(Instructions(tmp)));
+  vars tmp2;
+  EXPECT_NO_THROW(Maybe("file.txt", std::make_shared<Instructions>(
+                                        Instructions(tmp, tmp2))););
+  auto a = Maybe("file.txt",
+                 std::make_shared<Instructions>(Instructions(tmp, tmp2)));
   EXPECT_NO_THROW(Maybe::iterator b = a.begin());
 }
 

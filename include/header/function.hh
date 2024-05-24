@@ -1,4 +1,7 @@
 #include <functional>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "QubitClass.hh"
 #include "QuditClass.hh"
@@ -219,3 +222,17 @@ static uniform_return get(uniform_input in) {
       std::get<std::reference_wrapper<Qudit>>(in.vals[0]).get().get(), VEC};
 }
 }  // namespace QD_functions
+
+namespace AG_functions {
+static uniform_return qalloc(uniform_input in) {
+  std::vector<std::vector<Qbit>>& mem =
+      std::get<std::reference_wrapper<std::vector<std::vector<Qbit>>>>(
+          in.vals[0]);
+  vars& v = std::get<std::reference_wrapper<vars>>(in.vals[2]);
+  int t = std::get<int>(in.vals[1]);
+  v.insert(std::make_pair(std::get<std::string>(in.vals[3]),
+                          std::make_pair(t, mem.size())));
+  mem[t].push_back(Qbit());
+  return uniform_return{nullptr, NONE};
+}
+}  // namespace AG_functions

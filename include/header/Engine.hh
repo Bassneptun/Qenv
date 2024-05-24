@@ -15,12 +15,13 @@
 class Engine {
  public:
   Engine(std::string path)
-      : instructions(this->memory),
+      : instructions(this->memory, this->variables),
         bytecode(path, std::make_shared<Instructions>(this->instructions)),
         it(bytecode.begin()) {}
   ~Engine() {}
 
   void execute();
+  Maybe::iterator& operator++();
 
  private:
   Instructions instructions;

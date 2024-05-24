@@ -1,6 +1,7 @@
 #include "../include/header/Engine.hh"
 
 #include <armadillo>
+#include <iostream>
 #include <regex>
 
 #include "../include/header/func_wrapper.hh"
@@ -25,4 +26,9 @@ void Engine::execute() {
   } catch (const std::exception& e) {
     std::cerr << "Error: " << e.what() << std::endl;
   }
+}
+
+Maybe::iterator& Engine::operator++() {
+  ++this->it;
+  return this->it;
 }

@@ -30,6 +30,9 @@ add_executable(confirm_test tests/confirm_.cpp)
 add_executable(utils_test tests/utils.cpp)
 add_executable(gates_test tests/gates.cpp)
 add_executable(QD_gates_test tests/QD_gates.cpp)
+add_executable(engine_test tests/engine.cpp)
+
+target_link_libraries(engine_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
 
 target_link_libraries(confirm_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
 
