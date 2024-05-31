@@ -18,12 +18,18 @@ void Engine::execute() {
   std::reverse(words.begin(), words.end());
   for (auto word : words) {
     if (std::regex_match(word, std::regex("$\\w+"))) {
-      in.vals.push_back(this->memory[this->variables.at(word).first]
-                                    [this->variables.at(word).second]);
+      in.vals.push_back(
+          this->memory
+              [this->variables.at(word.substr(1, word.size() - 2)).first]
+              [this->variables.at(word.substr(1, word.size() - 2)).second]);
     } else if (std::regex_match(word, std::regex("\\d+"))) {
       in.vals.push_back(std::stoi(word));
     } else if (std::regex_match(word, std::regex("\"\\w+\""))) {
       in.vals.push_back(word);
+    } else if (word == "&") {
+      in.vals.push_back(&this->memory);
+    } else if (word == "$") {
+      in.vals.push_back(&this->variables);
     } else {
       throw std::runtime_error("Syntax error on word: " + word);
     }
@@ -43,3 +49,7 @@ Maybe::iterator& Engine::operator++() {
   ++this->it;
   return this->it;
 }
+
+void Engine::set_it(Maybe::iterator it) { this->it = it; }
+
+Maybe::iterator& Engine::get_it() { return this->it; }

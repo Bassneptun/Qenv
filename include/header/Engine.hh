@@ -23,6 +23,10 @@ class Engine {
   void execute();
   Maybe::iterator& operator++();
 
+  void set_it(Maybe::iterator);
+
+  Maybe::iterator& get_it();
+
  private:
   Instructions instructions;
 
