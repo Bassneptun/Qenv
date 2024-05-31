@@ -25,10 +25,10 @@ struct uniform_return {
 enum in_types { DOUBLE, QUBIT, QUDIT_, CX_VEC };
 
 struct uniform_input {
-  std::vector<std::variant<
-      double, int, std::string, std::reference_wrapper<Qudit>,
-      std::reference_wrapper<Qbit>, std::reference_wrapper<vars>,
-      std::reference_wrapper<cx_vec>, std::reference_wrapper<memory__>>>
+  std::vector<
+      std::variant<double, int, std::string, std::reference_wrapper<Qudit>,
+                   std::reference_wrapper<Qbit>, vars*,
+                   std::reference_wrapper<cx_vec>, memory__*>>
       vals;
   std::vector<in_types> types;
 };

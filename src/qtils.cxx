@@ -65,3 +65,17 @@ cx_mat Qtils::homo_pauliZ_operator(int d) {
   }
   return Z_d;
 }
+
+std::vector<std::string> Qtils::filter(std::vector<std::string> in) {
+  for (int i = in.size(); i > 0; i--) {
+    for (int j = in[i].size(); j > 0; j--) {
+      if (j == ' ') {
+        in[i].erase(j);
+      }
+    }
+    if (in[i].empty()) {
+      in.erase(in.begin() + i);
+    }
+  }
+  return in;
+}

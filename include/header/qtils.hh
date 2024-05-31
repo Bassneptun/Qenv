@@ -16,6 +16,7 @@ class Qtils {
   static cx_mat homo_pauliX_operator(int);
   // static cx_mat homo_pauliY_operator(int);
   static cx_mat homo_pauliZ_operator(int);
+  static std::vector<std::string> filter(std::vector<std::string>);
 };
 
 #endif

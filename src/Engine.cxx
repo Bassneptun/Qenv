@@ -1,9 +1,10 @@
 #include "../include/header/Engine.hh"
 
-#include <armadillo>
+#include <algorithm>
 #include <iostream>
 #include <regex>
 #include <stdexcept>
+#include <string>
 
 #include "../include/header/func_wrapper.hh"
 #include "../include/header/qtils.hh"
@@ -13,7 +14,8 @@ void Engine::execute() {
   auto words = Qtils::split(line, " ");
   uniform_input in;
 
-  reverse(words.begin(), words.end());
+  words = Qtils::filter(words);
+  std::reverse(words.begin(), words.end());
   for (auto word : words) {
     if (std::regex_match(word, std::regex("$\\w+"))) {
       in.vals.push_back(this->memory[this->variables.at(word).first]
@@ -23,9 +25,11 @@ void Engine::execute() {
     } else if (std::regex_match(word, std::regex("\"\\w+\""))) {
       in.vals.push_back(word);
     } else {
-      throw std::runtime_error("Syntax error");
+      throw std::runtime_error("Syntax error on word: " + word);
     }
   }
+
+  std::reverse(in.vals.begin(), in.vals.end());
 
   try {
     auto func = this->instructions[words[0]];
