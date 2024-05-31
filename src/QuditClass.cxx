@@ -3,7 +3,10 @@
 #include <armadillo>
 #include <cmath>
 #include <complex>
+#include <iostream>
 #include <memory>
+
+#include "../include/header/qtils.hh"
 
 using namespace std::complex_literals;
 
@@ -11,25 +14,34 @@ Qudit Qudit::combine(Qudit& other2) noexcept {
   return Qudit(kron(*this->values, other2.get()));
 }
 
-Qudit::valsr_ Qudit::haddamard() const noexcept {
-  cx_mat Fourier_haddamard(this->d, this->d);
-  const double d_sqtr = sqrt(this->d);
-  for (int i = 0; i < this->d; ++i) {
-    for (int j = 0; j < this->d; ++j) {
-      Fourier_haddamard(i, j) =
-          std::exp(-std::complex<double>(0, 2 * M_PI * i * j / this->d)) /
-          d_sqtr;
-    }
-  }
-  return std::make_shared<Qudit>(Qudit(Fourier_haddamard * (*this->values)));
+Qudit::valsr_ Qudit::cnot(Qudit& other) noexcept {
+  cx_vec temp;
+
+  mat CNOT = Qtils::homo_cnot_operator(this->values->n_elem);
+  auto combined = combine(other);
+  temp = CNOT * combined.get();
+  return temp;
 }
 
-Qudit::valsr_ Qudit::pauliX() const noexcept {
+Qudit::valsr_ Qudit::haddamard() const {
+  mat had = {{1., 1.}, {1., -1.}};
+  if (this->values->n_elem == 2) {
+    return had * (*this->values);
+  }
+  auto qb = log(d) / log(2);
+  mat temp = kron(had, had);
+  for (int i = 2; i < qb; ++i) {
+    temp = kron(temp, had);
+  }
+  return temp * (*this->values);
+}
+
+Qudit::valsr_ Qudit::pauliX() noexcept {
   arma::cx_mat X_d = arma::zeros<arma::cx_mat>(d, d);
   for (int i = 0; i < d; ++i) {
     X_d(i, (i + 1) % d) = 1;
   }
-  return std::make_shared<Qudit>(Qudit(X_d * (*this->values)));
+  return X_d * (*this->values);
 }
 
 Qudit::valsr_ Qudit::pauliZ() const noexcept {
@@ -39,34 +51,39 @@ Qudit::valsr_ Qudit::pauliZ() const noexcept {
   for (int i = 0; i < d; ++i) {
     Z_d(i, i) = std::pow(omega, i);
   }
-  return std::make_shared<Qudit>(Qudit(Z_d * (*this->values)));
+  return Z_d * (*this->values);
 }
 
-Qudit::valsr_ Qudit::identity() const noexcept {
-  return std::make_shared<Qudit>(Qudit(eye<cx_mat>(d, d)));
-}
+Qudit::valsr_ Qudit::identity() const noexcept { return *this->values; }
 
-Qudit::valsr_ Qudit::rx(double angle) const noexcept {
+Qudit::valsr_ Qudit::rx(double angle) {
   using namespace std::complex_literals;
-  arma::cx_mat X_d = this->pauliX()->get();
-  auto temp = arma::expmat(-1i * angle * X_d / 2);
-  return std::make_shared<Qudit>(Qudit(temp * (*this->values)));
+  arma::cx_mat X_d = arma::zeros<arma::cx_mat>(d, d);
+
+  for (int i = 0; i < d; ++i) {
+    int next = (i + 1) % d;
+    X_d(next, i) = 1.0;  // |next><i|
+  }
+
+  X_d = cos(angle / 2) * arma::eye<arma::cx_mat>(d, d) -
+        1i * sin(angle / 2) * X_d;
+  return X_d * (*this->values);
 }
 
 Qudit::valsr_ Qudit::ry(double angle) const noexcept {
   using namespace std::complex_literals;
-  arma::cx_mat Y_d = this->pauliY()->get();
+  arma::cx_mat Y_d = this->pauliY();
   auto temp = arma::expmat(-1i * angle * Y_d / 2);
-  return std::make_shared<Qudit>(Qudit(temp * (*this->values)));
+  return temp * (*this->values);
 }
 
 Qudit::valsr_ Qudit::rz(double angle) const noexcept {
   using namespace std::complex_literals;
-  arma::cx_mat R_z = arma::zeros<arma::cx_mat>(d, d);
-  for (double k = 0; k < d; ++k) {
-    R_z(k, k) = std::exp(1i * angle * k);
+  cx_mat R_z = arma::zeros<arma::cx_mat>(d, d);
+  for (double j = 0; j < d; ++j) {
+    R_z(j, j) = std::exp(2i * M_PI * j * angle / static_cast<double>(d));
   }
-  return std::make_shared<Qudit>(Qudit(R_z * (*this->values)));
+  return R_z * (*this->values);
 }
 
 Qudit::valsr_ Qudit::S() const noexcept {
@@ -74,7 +91,7 @@ Qudit::valsr_ Qudit::S() const noexcept {
   for (double k = 0; k < d; ++k) {
     S(k, k) = std::exp(1i * M_PI / 2.0 * k);
   }
-  return std::make_shared<Qudit>(Qudit(S * (*this->values)));
+  return S * (*this->values);
 }
 
 Qudit::valsr_ Qudit::T() const noexcept {
@@ -83,7 +100,7 @@ Qudit::valsr_ Qudit::T() const noexcept {
   for (double k = 0; k < d; ++k) {
     T(k, k) = std::exp(1i * M_PI / 4. * k);
   }
-  return std::make_shared<Qudit>(Qudit(T * (*this->values)));
+  return T * (*this->values);
 }
 
 Qudit::valsr_ Qudit::S_dag() const noexcept {
@@ -92,7 +109,7 @@ Qudit::valsr_ Qudit::S_dag() const noexcept {
   for (double k = 0; k < d; ++k) {
     S(k, k) = std::exp(-1i * M_PI / 2.0 * k);
   }
-  return std::make_shared<Qudit>(Qudit(S * (*this->values)));
+  return S * (*this->values);
 }
 
 Qudit::valsr_ Qudit::T_dag() const noexcept {
@@ -101,7 +118,7 @@ Qudit::valsr_ Qudit::T_dag() const noexcept {
   for (double k = 0; k < d; ++k) {
     T(k, k) = std::exp(-1i * M_PI / 4. * k);
   }
-  return std::make_shared<Qudit>(Qudit(T * (*this->values)));
+  return T * (*this->values);
 }
 
 Qudit::valsr_ Qudit::swap(Qudit& other) noexcept {
@@ -111,9 +128,12 @@ Qudit::valsr_ Qudit::swap(Qudit& other) noexcept {
       Swap(i * d + j, j * d + i) = 1;
     }
   }
-  return std::make_shared<Qudit>(Qudit(Swap * (*this->values) * other.get()));
+  return Swap * this->combine(other).get();
 }
 
+// I really don't want to deal with this, I am just going to leave it broken
+// and hope I won't ever need to call it. If I do call it at some point it will
+// probably break with a segfault.
 Qudit::valsr_ Qudit::cr(double angle) const noexcept {
   using namespace std::complex_literals;
   arma::cx_mat CR = arma::zeros<arma::cx_mat>(d * d, d * d);
@@ -125,9 +145,10 @@ Qudit::valsr_ Qudit::cr(double angle) const noexcept {
     }
   }
   cx_double phi = exp(cx_double(0, angle));
-  return std::make_shared<Qudit>(Qudit(CR * (*this->values)));
+  return CR * (*this->values);
 }
 
+// same here
 Qudit::valsr_ Qudit::crk(double k) const noexcept {
   using namespace std::complex_literals;
   arma::cx_mat CRk = arma::zeros<arma::cx_mat>(d * d, d * d);
@@ -139,10 +160,10 @@ Qudit::valsr_ Qudit::crk(double k) const noexcept {
       CRk(i * d + j, i * d + j) = phase;
     }
   }
-  return std::make_shared<Qudit>(Qudit(CRk * (*this->values)));
+  return CRk * (*this->values);
 }
 
-Qudit::valsr_ Qudit::toffoli(Qudit& other, Qudit& other2) noexcept {
+Qudit::valsr_ Qudit::toffoli(Qudit& other, Qudit& other2) {
   using namespace std::complex_literals;
   int d3 = d * d * d;
   arma::cx_mat Toffoli = arma::eye<arma::cx_mat>(d3, d3);
@@ -157,8 +178,8 @@ Qudit::valsr_ Qudit::toffoli(Qudit& other, Qudit& other2) noexcept {
       }
     }
   }
-  return std::make_shared<Qudit>(
-      Qudit(Toffoli * (*this->values) * other.get() * other2.get()));
+  auto tmp = other2.combine(other);
+  return Toffoli * this->combine(tmp).get();
 }
 
 // DOESN'T WORK. ONLY HERE TO MAKE THE COMPILER SHUT UP
@@ -168,12 +189,12 @@ Qudit::valsr_ Qudit::pauliY() const noexcept {
   for (int i = 0; i < d; ++i) {
     Y_d(i, (i + 1) % d) = 1i;
   }
-  return std::make_shared<Qudit>(Qudit(Y_d * (*this->values)));
+  return Y_d * (*this->values);
 }
 
 // THIS AS WELL
 Qudit::valsr_ Qudit::cy(Qudit& other) noexcept {
-  return std::make_shared<Qudit>(Qudit((*this->values) * other.get()));
+  return *this->values * other.get();
 }
 
 int Qudit::measure() const {
@@ -190,7 +211,7 @@ int Qudit::measure() const {
     probabilities[i] /= sumProbabilities;
   }
 
-  double r = randu();
+  double r = randn();
   double cumulativeProbability = 0.0;
   for (int i = 0; i < dim; ++i) {
     cumulativeProbability += probabilities[i];

@@ -3,26 +3,29 @@
 
 #include <functional>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 
 #include "func_wrapper.hh"
 
 using std::string;
 
-extern std::unordered_map<string, std::function<uniform_return(uniform_input)>>
-    instructions;
+using memory_ = std::vector<std::vector<Qbit>>;
 
-template <typename Engine>
+using vars = std::unordered_map<std::string, std::pair<uint8_t, size_t>>;
+
 class Instructions {
  public:
-  Instructions(Engine& engine) : engine(engine) {}
+  Instructions(memory_& memory, vars& var_register)
+      : memory(&memory), var_register(&var_register) {}
   ~Instructions() {}
   std::function<uniform_return(uniform_input)> operator[](std::string name);
 
   std::vector<std::tuple<std::string, std::string>> getArgs(std::string name);
 
+  memory_* memory;
+
  private:
-  Engine& engine;
   static std::unordered_map<std::string,
                             std::function<uniform_return(uniform_input)>>
       _instructions;
@@ -30,6 +33,7 @@ class Instructions {
   static std::unordered_map<std::string,
                             std::vector<std::tuple<std::string, std::string>>>
       arguments;
+  vars* var_register;
 };
 
 #endif
