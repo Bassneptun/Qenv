@@ -10,9 +10,6 @@
 
 using std::string;
 
-extern std::unordered_map<string, std::function<uniform_return(uniform_input)>>
-    instructions;
-
 using memory_ = std::vector<std::vector<Qbit>>;
 
 using vars = std::unordered_map<std::string, std::pair<uint8_t, size_t>>;

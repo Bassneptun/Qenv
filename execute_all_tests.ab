@@ -1,0 +1,10 @@
+let files = $ls *test*$ failed{
+  echo "No tests in current directory"
+}
+
+loop index, file in files_list{
+  echo "executing test {file}, the {index}. test"
+  $./file$ failed{
+    echo "file {file} is not executable"
+  }
+}

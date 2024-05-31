@@ -3,6 +3,7 @@
 #include <armadillo>
 #include <iostream>
 #include <regex>
+#include <stdexcept>
 
 #include "../include/header/func_wrapper.hh"
 #include "../include/header/qtils.hh"
@@ -17,6 +18,12 @@ void Engine::execute() {
     if (std::regex_match(word, std::regex("$\\w+"))) {
       in.vals.push_back(this->memory[this->variables.at(word).first]
                                     [this->variables.at(word).second]);
+    } else if (std::regex_match(word, std::regex("\\d+"))) {
+      in.vals.push_back(std::stoi(word));
+    } else if (std::regex_match(word, std::regex("\"\\w+\""))) {
+      in.vals.push_back(word);
+    } else {
+      throw std::runtime_error("Syntax error");
     }
   }
 

@@ -19,6 +19,7 @@ std::vector<std::tuple<std::string, std::string>> Instructions::getArgs(
 
 std::unordered_map<std::string, std::function<uniform_return(uniform_input)>>
     Instructions::_instructions{
+        {"QAL", std::bind(AG_functions::qalloc, std::placeholders::_1)},
         {"HAD", std::bind(QB_functions::haddamard, std::placeholders::_1)},
         {"PX", std::bind(QB_functions::pauliX, std::placeholders::_1)},
         {"PY", std::bind(QB_functions::pauliY, std::placeholders::_1)},
@@ -60,6 +61,11 @@ std::unordered_map<std::string, std::function<uniform_return(uniform_input)>>
 std::unordered_map<std::string,
                    std::vector<std::tuple<std::string, std::string>>>
     Instructions::arguments{
+        {"QAL",
+         {{"Mem", "Mem"},
+          {"Int", "Int"},
+          {"Vars", "Vars"},
+          {"String", "String"}}},
         {"HAD", {{"Qubit", "Qubit"}}},
         {"CR", {{"Qubit", "Qubit"}}},
         {"PX", {{"Qubit", "Qubit"}}},
