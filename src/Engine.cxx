@@ -20,7 +20,6 @@ void Engine::execute() {
 
   words = Qtils::filter(words);
   std::reverse(words.begin(), words.end());
-  std::cout << "000\n";
   for (auto word : words) {
     if (std::regex_match(word, std::regex("\\$\\w+"))) {
       in.vals.push_back(
