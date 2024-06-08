@@ -13,7 +13,10 @@
 
 void Engine::execute() {
   auto line = *this->it;
-  if (line == "\1") throw std::runtime_error("Invalid Syntax_");
+  if (line == "\1")
+    throw std::runtime_error("Invalid Syntax_" + (this->it.str().size() > 1
+                                                      ? this->it.str()
+                                                      : "Empty Line"));
   line = line.substr(line.find(" ") + 1, line.size() - line.find(" ") - 1);
   auto words = Qtils::split(line, " ");
   uniform_input in;
@@ -30,14 +33,21 @@ void Engine::execute() {
       in.vals.push_back(std::stoi(word));
     } else if (std::regex_match(word, std::regex("\"\\w+\""))) {
       in.vals.push_back(word.substr(1, words.size() - 3));
+    } else if (std::regex_match(word, std::regex("%\\w+"))) {
+      in.vals.push_back(
+          &this->cache[this->dvariables[word.substr(1, word.size() - 2)]]);
     } else if (word == "&") {
       in.vals.push_back(&this->memory);
+    } else if (word == "#") {
+      in.vals.push_back(&this->dvariables);
     } else if (word == "$") {
       in.vals.push_back(&this->variables);
     } else if (word == "") {
       continue;  // this shouldn't actually happen, I don't really know why it
                  // does and I am fine with that as long as this prevents the
                  // runtime error.
+    } else if (word == "%") {
+      in.vals.push_back(&cache);
     } else {
       throw std::runtime_error("Syntax error on word: " + word + ".");
     }
@@ -60,5 +70,11 @@ Maybe::iterator& Engine::operator++() {
 }
 
 void Engine::set_it(Maybe::iterator it) { this->it = it; }
+
+void Engine::exe() {
+  for (; this->it != this->bytecode.end(); ++it) {
+    this->execute();
+  }
+}
 
 Maybe::iterator& Engine::get_it() { return this->it; }

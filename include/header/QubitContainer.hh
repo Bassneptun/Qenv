@@ -12,66 +12,39 @@ class QubitContainer {
   QubitContainer() = default;
   QubitContainer(const QubitContainer&) = default;
   QubitContainer(QubitContainer&&) = default;
-  QubitContainer(const std::vector<std::shared_ptr<Qbit>>& qubits)
-      : _qubits(qubits) {}
+  QubitContainer(const std::vector<Qbit*>& qubits) : _qubits(qubits) {}
   QubitContainer& operator=(const QubitContainer&) = default;
   QubitContainer& operator=(QubitContainer&&) = default;
   ~QubitContainer() = default;
 
-  std::vector<std::shared_ptr<Qbit>>& getQubits() { return _qubits; }
+  std::vector<Qbit*>& getQubits();
 
-  std::shared_ptr<Qbit> getQubit(int index) { return _qubits[index]; }
+  Qbit* getQubit(int index);
 
-  std::shared_ptr<Qbit> operator[](int index) { return _qubits[index]; }
+  Qbit* operator[](int index);
 
-  void setQubits(const std::vector<std::shared_ptr<Qbit>>& qubits) {
-    _qubits = qubits;
-  }
+  void setQubits(const std::vector<Qbit*>& qubits);
 
-  std::vector<std::shared_ptr<Qbit>> operator[](std::string range) {
-    int start = 0, end = 0;
-    bool hold = false;
-    for (auto [i, ch] : Enumerate(range)) {
-      if (std::regex_match(std::string(1, ch), std::regex("\\d+")) && !hold) {
-        if (i == 0)
-          start = std::stoi(std::string(1, ch));
-        else
-          end = std::stoi(std::string(1, ch));
-      } else if (std::regex_match(std::string(1, ch), std::regex(":"))) {
-        if (i == range.size() - 1)
-          end = this->size();
-        else
-          hold = true;
-      } else if (std::regex_match(std::string(1, ch), std::regex("\\d+")) &&
-                 hold) {
-        end = std::stoi(std::string(1, ch));
-        hold = false;
-      } else {
-        throw std::runtime_error("Syntax error");
-      }
-    }
-    return std::vector<std::shared_ptr<Qbit>>(this->_qubits.begin() + start,
-                                              this->_qubits.begin() + end);
-  }
+  std::vector<Qbit*> operator[](std::string range);
 
-  int size() { return _qubits.size(); }
+  int size();
 
-  void push_back(std::shared_ptr<Qbit> qubit) { _qubits.push_back(qubit); }
+  void push_back(Qbit* qubit);
 
-  void clear() { _qubits.clear(); }
+  void clear();
 
-  void erase(int index) { _qubits.erase(_qubits.begin() + index); }
+  void erase(int index);
 
-  std::shared_ptr<Qbit> pop_back() { return _qubits.back(); }
+  Qbit* pop_back();
 
-  std::shared_ptr<Qbit> front() { return _qubits.front(); }
+  Qbit* front();
 
-  std::shared_ptr<Qbit> back() { return _qubits.back(); }
+  Qbit* back();
 
-  std::shared_ptr<Qbit> at(int index) { return _qubits.at(index); }
+  Qbit* at(int index);
 
  private:
-  std::vector<std::shared_ptr<Qbit>> _qubits;
+  std::vector<Qbit*> _qubits;
 };
 
 #endif

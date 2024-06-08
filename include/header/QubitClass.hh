@@ -5,6 +5,7 @@
 #include <cmath>
 #include <complex>
 #include <memory>
+#include <optional>
 #include <utility>
 
 #include "QuditClass.hh"
@@ -15,7 +16,6 @@ using namespace std::complex_literals;
 
 class Qbit {
  public:
-  typedef std::shared_ptr<Qbit> valsr;
   typedef std::unique_ptr<cx_vec> vals;
   explicit Qbit(const cx_vec& values)
       : values(std::make_unique<cx_vec>(values)) {}
@@ -35,29 +35,35 @@ class Qbit {
   Qudit combine(Qbit& q1);
   Qudit cnot(Qbit& other);
   Qudit cnot(const vals);
-  valsr haddamard() const;
-  valsr pauliX() const;
-  valsr pauliY() const;
-  valsr pauliZ() const;
-  valsr identity() const;
-  valsr rx(double angle) const;
-  valsr ry(double angle) const;
-  valsr rz(double angle) const;
-  valsr S() const;
-  valsr T() const;
-  valsr S_dag() const;
-  valsr T_dag() const;
+  Qbit& haddamard();
+  Qbit& pauliX();
+  Qbit& pauliY();
+  Qbit& pauliZ();
+  Qbit& identity();
+  Qbit& rx(double angle);
+  Qbit& ry(double angle);
+  Qbit& rz(double angle);
+  Qbit& S();
+  Qbit& T();
+  Qbit& S_dag();
+  Qbit& T_dag();
   Qudit cy(Qbit& other);
   Qudit cy(const cx_vec q1);
-  valsr swap(Qbit& other);
-  valsr swap(const cx_vec& q1);
-  // valsr cr(double angle) const;
-  // valsr crk(double angle) const;
+  Qudit swap(Qbit& other);
+  Qudit swap(const cx_vec& q1);
+  // Qbit& cr(double angle) const;
+  // Qbit& crk(double angle) const;
   Qudit toffoli(Qbit& other, Qbit& other2);
   Qudit toffoli(const cx_vec& q1, const cx_vec& q2);
   int measure() const;
 
-  void set(const cx_vec& values) { *this->values = values; }
+  void set(std::optional<std::complex<double>> a,
+           std::optional<std::complex<double>> b) {
+    if (a) this->values->operator()(0) = *a;
+    if (b) this->values->operator()(1) = *b;
+  }
+
+  void set(const cx_vec& a) { *this->values = a; }
 
   cx_vec* getValues() const { return this->values.get(); }
   cx_vec get() const { return *this->values; }
@@ -66,6 +72,9 @@ class Qbit {
     this->values.swap(other.values);
     return *this;
   }
+
+  Qbit& custom(const cx_vec&);
+  Qbit& custom(const mat&);
 
   friend auto operator<=>(const Qbit&, const Qbit&) = default;
 

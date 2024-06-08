@@ -1,0 +1,7 @@
+QAL & 0 $ "f"
+SET $f 1 0
+SHW $f
+PX $f
+SHW $f
+HAD $f
+SHW $f

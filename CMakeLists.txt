@@ -9,7 +9,7 @@ include_directories(include)
 find_package(GTest REQUIRED)
 find_package(Armadillo REQUIRED)
 
-add_compile_options(-O2 --debug)
+add_compile_options(-O2)
 
 if(NOT GTest_FOUND)
     message(FATAL_ERROR "Google Test not found. Please make sure it is installed.")
@@ -22,6 +22,9 @@ add_library(qenv STATIC
     src/qtils.cxx
     src/QubitClass.cxx
     src/QuditClass.cxx
+    src/function.cxx
+    src/enumerate.cxx
+    src/QubitContainer.cxx
 )
 
 add_library(qenv::qenv ALIAS qenv)
@@ -33,16 +36,15 @@ add_executable(QD_gates_test tests/QD_gates.cpp)
 add_executable(engine_test tests/engine.cpp)
 add_executable(alloc_test tests/alloc.cpp)
 
+add_executable(main main.cpp)
+
+target_link_libraries(main PRIVATE qenv::qenv ${ARMADILLO_LIBRARIES})
+
 target_link_libraries(alloc_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
-
 target_link_libraries(engine_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
-
 target_link_libraries(confirm_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
-
 target_link_libraries(utils_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
-
 target_link_libraries(gates_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
-
 target_link_libraries(QD_gates_test PRIVATE qenv::qenv GTest::GTest GTest::Main ${ARMADILLO_LIBRARIES})
 
 add_custom_target(execute_all_tests ALL COMMAND /home/bassneptun/qtest_env/execute_all_tests.sh WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})

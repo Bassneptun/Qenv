@@ -38,7 +38,9 @@ Maybe::iterator& Maybe::iterator::operator++() {
     throw std::out_of_range("Index out of range");
   }
   if (!this->p->syntax_check(std::distance(p->bytecode.begin(), it) + 1)) {
-    throw std::runtime_error("Syntax error");
+    throw std::runtime_error(
+        "Syntax error" +
+        this->p->bytecode[distance(p->bytecode.begin(), it) + 1]);
   }
   it++;
   return *this;
@@ -80,7 +82,8 @@ bool Maybe::syntax_check(size_t i) {
   size_t numArgs = this->instructions->getArgs(operation).size();
 
   std::string pattern =
-      "\\w+ (((\\$\\w+)|(&)|(\\d+)|(\\$)|(\"\\w\"))( |\\n)*){" +
+      "\\w+ (((\\$\\w+)|(&)|(\\d+)|(\\$)|(\"\\w+\")|(%\\w+)|(#)|(%))( "
+      "|\\n)*){" +
       std::to_string(numArgs) + "}";
   if (!std::regex_match(code, std::regex(pattern))) {
     return false;
@@ -117,3 +120,11 @@ bool Maybe::typecheck(size_t i) {
   auto arguments = all_argume
 }
 */
+
+std::vector<string>::iterator Maybe::iterator::get() { return this->it; }
+
+bool Maybe::iterator::operator!=(const iterator& other) {
+  return other.it != this->it;
+}
+
+std::string Maybe::iterator::str() const noexcept { return *it; }

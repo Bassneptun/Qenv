@@ -27,6 +27,8 @@ class Engine {
 
   Maybe::iterator& get_it();
 
+  void exe();
+
  private:
   Instructions instructions;
 
@@ -35,8 +37,10 @@ class Engine {
 
   std::unordered_map<std::string, std::pair<uint8_t, size_t>>
       variables;  // map variable names to place and index
+  std::unordered_map<std::string, size_t> dvariables;
 
   std::vector<std::vector<Qbit>> memory;
+  std::vector<Qudit> cache;
 };
 
 #endif

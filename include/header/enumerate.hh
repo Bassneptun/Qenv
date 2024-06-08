@@ -13,13 +13,9 @@ class Enumerate {
 
     Iterator(it_type it, size_t index) : it(it), index(index) {}
 
-    Iterator& operator++() {
-      ++it;
-      ++index;
-      return *this;
-    }
-    bool operator!=(const Iterator& other) const { return it != other.it; }
-    std::pair<size_t, value_type&> operator*() const { return {index, *it}; }
+    Iterator& operator++();
+    bool operator!=(const Iterator& other) const;
+    std::pair<size_t, value_type&> operator*() const;
 
    private:
     it_type it;
@@ -28,9 +24,9 @@ class Enumerate {
 
   Enumerate(Container& container) : container(container) {}
 
-  Iterator begin() const { return Iterator(container.begin(), 0); }
+  Iterator begin() const;
 
-  Iterator end() const { return Iterator(container.end(), container.size()); }
+  Iterator end() const;
 
  private:
   Container& container;

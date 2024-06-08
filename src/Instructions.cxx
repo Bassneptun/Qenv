@@ -19,7 +19,12 @@ std::vector<std::tuple<std::string, std::string>> Instructions::getArgs(
 
 std::unordered_map<std::string, std::function<uniform_return(uniform_input)>>
     Instructions::_instructions{
+        {"DSW", std::bind(AG_functions::dshow, std::placeholders::_1)},
+        {"DAL", std::bind(AG_functions::dalloc, std::placeholders::_1)},
+        {"SHW", std::bind(AG_functions::show, std::placeholders::_1)},
+        {"SET", std::bind(AG_functions::set, std::placeholders::_1)},
         {"QAL", std::bind(AG_functions::qalloc, std::placeholders::_1)},
+        {"CNT", std::bind(QB_functions::cnot, std::placeholders::_1)},
         {"HAD", std::bind(QB_functions::haddamard, std::placeholders::_1)},
         {"PX", std::bind(QB_functions::pauliX, std::placeholders::_1)},
         {"PY", std::bind(QB_functions::pauliY, std::placeholders::_1)},
@@ -61,18 +66,23 @@ std::unordered_map<std::string, std::function<uniform_return(uniform_input)>>
 std::unordered_map<std::string,
                    std::vector<std::tuple<std::string, std::string>>>
     Instructions::arguments{
+        {"DAL", {{"Dmem", "Dmem"}, {"Dvars", "Dvars"}, {"String", "String"}}},
         {"QAL",
          {{"Mem", "Mem"},
           {"Int", "Int"},
           {"Vars", "Vars"},
           {"String", "String"}}},
+        {"DSW", {{"Qudit", "Qudit"}, {"String", "String"}}},
+        {"SHW", {{"Qubit", "Qubit"}, {"String", "String"}}},
+        {"SET", {{"Qubit", "Qubit"}, {"Int", "Int"}, {"Int", "Int"}}},
         {"HAD", {{"Qubit", "Qubit"}}},
+        {"CNT", {{"Qubit", "Qubit"}, {"Qubit", "Qubit"}, {"Qudit", "Qudit"}}},
         {"CR", {{"Qubit", "Qubit"}}},
         {"PX", {{"Qubit", "Qubit"}}},
         {"PY", {{"Qubit", "Qubit"}}},
         {"PZ", {{"Qubit", "Qubit"}}},
         {"ID", {{"Qubit", "Qubit"}}},
-        {"TOF", {{"Qubit", "Qubit"}, {"Qubit", "Qubit"}}},
+        {"TOF", {{"Qubit", "Qubit"}, {"Qubit", "Qubit"}, {"Qubit", "Qubit"}}},
         {"RX", {{"Qubit", "Qubit"}}},
         {"RY", {{"Qubit", "Qubit"}}},
         {"RZ", {{"Qubit", "Qubit"}}},

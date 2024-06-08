@@ -1,0 +1,9 @@
+DAL % # "qd"
+QAL & 0 $ "a"
+QAL & 0 $ "b"
+SET $a 0 1
+SET $b 1 0
+SHW $a "a"
+SHW $b "a"
+CNT $a $b %qd
+DSW %qd "qd"

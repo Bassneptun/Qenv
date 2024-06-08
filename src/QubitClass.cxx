@@ -2,6 +2,7 @@
 
 #include <armadillo>
 #include <complex>
+#include <iostream>
 #include <memory>
 
 using std::complex;
@@ -56,115 +57,122 @@ Qudit Qbit::cnot(vals other) {
   return Qudit(temp);
 }
 
-Qbit::valsr Qbit::haddamard() const {
+Qbit& Qbit::haddamard() {
   if (this->values->n_elem != 2)
     throw std::invalid_argument("Input must not be Qudit");
   mat h_matrix = {{1 / sqrt(2), 1 / sqrt(2)}, {1 / sqrt(2), -1 / sqrt(2)}};
   cx_vec temp = h_matrix * (*this->values);
-  return std::make_shared<Qbit>(Qbit(temp));
+  *this->values = temp;
+  return *this;
 }
 
-Qbit::valsr Qbit::pauliX() const {
+Qbit& Qbit::pauliX() {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
   mat temp = {{0, 1}, {1, 0}};
-  return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
+  *this->values = temp * (*this->values);
+  return *this;
 }
 
-Qbit::valsr Qbit::pauliY() const {
+Qbit& Qbit::pauliY() {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
   cx_mat temp = {{complex(0.0, 0.0), complex(0.0, -1.0)},
                  {complex(0.0, 1.0), complex(0.0, 0.0)}};
-  return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
+  *this->values = temp * (*this->values);
+  return *this;
 }
 
-Qbit::valsr Qbit::pauliZ() const {
+Qbit& Qbit::pauliZ() {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
   mat temp = {{1, 0}, {0, -1}};
-  return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
+  *this->values = temp * (*this->values);
+  return *this;
 }
 
-Qbit::valsr Qbit::identity() const {
+Qbit& Qbit::identity() {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
   mat temp = {{1, 0}, {0, 1}};
-  return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
+  *this->values = temp * (*this->values);
+  return *this;
 }
 
-Qbit::valsr Qbit::rx(double angle) const {
+Qbit& Qbit::rx(double angle) {
+  using namespace std::complex_literals;
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
   double cos_half_angle = std::cos(angle / 2);
   double sin_half_angle = std::sin(angle / 2);
-  arma::cx_mat temp = {
-      {cos_half_angle, -std::complex<double>(0, 1.0) * sin_half_angle},
-      {-std::complex<double>(0, 1.0) * sin_half_angle, cos_half_angle}};
-  return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
+  arma::cx_mat temp = {{cos_half_angle, -1i * sin_half_angle},
+                       {-1i * sin_half_angle, cos_half_angle}};
+  *this->values = temp * (*this->values);
+
+  return *this;
 }
 
-Qbit::valsr Qbit::ry(double angle) const {
+Qbit& Qbit::ry(double angle) {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
   cx_mat temp = {{complex(cos(angle / 2)), -sin(angle / 2)},
                  {sin(angle / 2), cos(angle / 2)}};
-  return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
+  *this->values = temp * (*this->values);
+  return *this;
 }
 
-Qbit::valsr Qbit::rz(double angle) const {
+Qbit& Qbit::rz(double angle) {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
   cx_mat temp = {{exp(complex(angle / 2, -1.0)), complex(0.0, 0.0)},
                  {complex(0.0, 0.0), exp(complex(angle / 2, 1.))}};
-  return std::make_shared<Qbit>(Qbit(temp * (*this->values)));
+  *this->values = temp * (*this->values);
+  return *this;
 }
 
-// S Gate: Applies a phase of π/2
-Qbit::valsr Qbit::S() const {
+Qbit& Qbit::S() {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
   cx_mat S_gate = {{1, 0}, {0, cx_double(0, 1)}};
-  return std::make_shared<Qbit>(Qbit(S_gate * (*this->values)));
+  *this->values = S_gate * (*this->values);
+  return *this;
 }
 
-// T Gate: Applies a phase of π/4
-Qbit::valsr Qbit::T() const {
+Qbit& Qbit::T() {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
   cx_mat T_gate = {{1, 0}, {0, exp(cx_double(0, M_PI / 4))}};
-  return std::make_shared<Qbit>(Qbit(T_gate * (*this->values)));
+  *this->values = T_gate * (*this->values);
+  return *this;
 }
 
-// S^\dagger Gate: Applies a phase of -π/2
-Qbit::valsr Qbit::S_dag() const {
+Qbit& Qbit::S_dag() {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
   cx_mat S_dag_gate = {{1, 0}, {0, cx_double(0, -1)}};
-  return std::make_shared<Qbit>(Qbit(S_dag_gate * (*this->values)));
+  *this->values = S_dag_gate * (*this->values);
+  return *this;
 }
 
-// T^\dagger Gate: Applies a phase of -π/4
-Qbit::valsr Qbit::T_dag() const {
+Qbit& Qbit::T_dag() {
   if (this->values->n_elem != 2) {
     throw std::invalid_argument("Input must not be Qudit");
   }
   cx_mat T_dag_gate = {{1, 0}, {0, exp(cx_double(0, -M_PI / 4))}};
-  return std::make_shared<Qbit>(Qbit(T_dag_gate * (*this->values)));
+  *this->values = T_dag_gate * (*this->values);
+  return *this;
 }
 
-// Controlled-Y Gate: Applies a Pauli Y gate to the target if the control is in
-// state |1>
 Qudit Qbit::cy(Qbit& other) {
   if (this->values->n_elem != other.values->n_elem) {
     throw std::invalid_argument("Qudits must be the same size");
@@ -180,7 +188,7 @@ Qudit Qbit::cy(Qbit& other) {
   return Qudit(temp);
 }
 
-Qbit::valsr Qbit::swap(Qbit& other) {
+Qudit Qbit::swap(Qbit& other) {
   if (this->values->n_elem != 2 || other.values->n_elem != 2) {
     throw std::invalid_argument("Both qubits must be valid");
   }
@@ -188,10 +196,10 @@ Qbit::valsr Qbit::swap(Qbit& other) {
 
   auto combined = combine(other);
   cx_vec temp = swap_mat * combined.get();
-  return std::make_shared<Qbit>(Qbit(temp));
+  return Qudit(temp);
 }
 
-Qbit::valsr Qbit::swap(const cx_vec& q1) {
+Qudit Qbit::swap(const cx_vec& q1) {
   Qbit otherQ(q1);
   return swap(otherQ);
 }
@@ -218,4 +226,14 @@ Qudit Qbit::toffoli(const cx_vec& q1, const cx_vec& q2) {
   Qbit otherQ1(q1);
   Qbit otherQ2(q2);
   return toffoli(otherQ1, otherQ2);
+}
+
+Qbit& Qbit::custom(const cx_vec& gate) {
+  *this->values = gate * (*this->values);
+  return *this;
+}
+
+Qbit& Qbit::custom(const mat& gate) {
+  *this->values = gate * (*this->values);
+  return *this;
 }

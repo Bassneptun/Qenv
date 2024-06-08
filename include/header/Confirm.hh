@@ -22,10 +22,15 @@ class Maybe {
    public:
     iterator(Maybe* p, bool isEnd = false);
     ~iterator() {}
+
+    std::string str() const noexcept;
     std::string operator*();
     iterator& operator++();
     iterator& operator=(const iterator& other);
     iterator& operator+(const int);
+
+    std::vector<string>::iterator get();
+    bool operator!=(const iterator& other);
 
    private:
     Maybe* p;
