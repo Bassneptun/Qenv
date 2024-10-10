@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/engine_test.dir/tests/engine.cpp.o -o engine_test  libqenv.a /usr/lib/libarmadillo.so /usr/lib/x86_64-linux-gnu/libgtest_main.a /usr/lib/x86_64-linux-gnu/libgtest.a 

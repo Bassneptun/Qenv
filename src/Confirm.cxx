@@ -39,7 +39,7 @@ Maybe::iterator& Maybe::iterator::operator++() {
   }
   if (!this->p->syntax_check(std::distance(p->bytecode.begin(), it) + 1)) {
     throw std::runtime_error(
-        "Syntax error " +
+        "Syntax error1 " +
         this->p->bytecode[distance(p->bytecode.begin(), it) + 1]);
   }
   it++;
@@ -82,7 +82,7 @@ bool Maybe::syntax_check(size_t i) {
   size_t numArgs = this->instructions->getArgs(operation).size();
 
   std::string pattern =
-      "\\w+ (((\\$\\w+)|(&)|(\\d+)|(\\$)|(\"\\w+\")|(%\\w+)|(#)|(%)|(\\?{2}\\d+)))( "
+      "\\w+ (((\\$\\w+)|(&)|(\\d+)|(\\$)|(\"\\w+\")|(%\\w+)|(#)|(%)|(\\?\\d+)|(\\?\\?\\d+))( "
       "|\\n)*){" +
       std::to_string(numArgs) + "}";
   if (!std::regex_match(code, std::regex(pattern))) {

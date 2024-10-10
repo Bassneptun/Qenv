@@ -63,18 +63,22 @@ void Engine::execute(std::vector<std::string> args) {
     } else if (std::regex_match(word, std::regex("\\?\\d+"))) {
       in.vals.push_back(std::stoi(args[std::stoi(word.substr(1, word.size() - 1))]));
     } else if (std::regex_match(word, std::regex("\\?\\?\\d+"))) {
-      in.vals.push_back(std::stod(args[std::stoi(word.substr(1, word.size() - 1))]));
+      in.vals.push_back((double)std::stod(args[std::stoi(word.substr(2, word.size() - 2))]));
+      std::cout << "1_" << std::endl;
     } else {
       throw std::runtime_error("Syntax error on word: " + word + ".");
     }
   }
 
+  std::cout << "1_" << std::endl;
   std::reverse(in.vals.begin(), in.vals.end());
+  std::cout << "1_" << std::endl;
 
   bool is_mutative;
   try {
     std::string func_name = (*this->it).substr(0, (*this->it).find(" "));
     is_mutative = !contains(non_mutative, func_name);
+    std::cout << func_name << std::endl;
     auto func = this->instructions[func_name];
     func(in);
   } catch (const std::exception &e) {
@@ -156,6 +160,7 @@ void Engine::execute_new(std::vector<std::string> args, Maybe::iterator it) {
   bool is_mutative;
   try {
     std::string func_name = (*it).substr(0, (*it).find(" "));
+    std::cout << func_name << std::endl;
     is_mutative = !contains(non_mutative, func_name);
     auto func = this->instructions[func_name];
     func(in);

@@ -1,2 +1,0 @@
-/usr/bin/ar qc libqenv.a CMakeFiles/qenv.dir/src/Confirm.cxx.o CMakeFiles/qenv.dir/src/Engine.cxx.o CMakeFiles/qenv.dir/src/Instructions.cxx.o CMakeFiles/qenv.dir/src/qtils.cxx.o CMakeFiles/qenv.dir/src/QubitClass.cxx.o CMakeFiles/qenv.dir/src/QuditClass.cxx.o CMakeFiles/qenv.dir/src/function.cxx.o CMakeFiles/qenv.dir/src/enumerate.cxx.o CMakeFiles/qenv.dir/src/QubitContainer.cxx.o
-/usr/bin/ranlib libqenv.a

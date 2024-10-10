@@ -1,3 +1,4 @@
-QAL $ 0 & "a"
-RX $a ?0
+QAL & 0 $ "a"
+SET $a 0 1
+RX $a ??0
 SHW $a
