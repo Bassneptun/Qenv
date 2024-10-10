@@ -2,17 +2,17 @@
 
 #include <vector>
 
-std::vector<Qbit*>& QubitContainer::getQubits() { return _qubits; }
+std::vector<Qbit *> &QubitContainer::getQubits() { return _qubits; }
 
-Qbit* QubitContainer::getQubit(int index) { return _qubits[index]; }
+Qbit *QubitContainer::getQubit(int index) { return _qubits[index]; }
 
-Qbit* QubitContainer::operator[](int index) { return _qubits[index]; }
+Qbit *QubitContainer::operator[](int index) { return _qubits[index]; }
 
-void QubitContainer::setQubits(const std::vector<Qbit*>& qubits) {
+void QubitContainer::setQubits(const std::vector<Qbit *> &qubits) {
   _qubits = qubits;
 }
 
-std::vector<Qbit*> QubitContainer::operator[](std::string range) {
+std::vector<Qbit *> QubitContainer::operator[](std::string range) {
   int start = 0, end = 0;
   bool hold = false;
   for (auto [i, ch] : Enumerate(range)) {
@@ -34,8 +34,8 @@ std::vector<Qbit*> QubitContainer::operator[](std::string range) {
       throw std::runtime_error("Syntax error");
     }
   }
-  return std::vector<Qbit*>(this->_qubits.begin() + start,
-                            this->_qubits.begin() + end);
+  return std::vector<Qbit *>(this->_qubits.begin() + start,
+                             this->_qubits.begin() + end);
 }
 
 void QubitContainer::erase(int index) {
@@ -46,16 +46,16 @@ void QubitContainer::clear() { _qubits.clear(); }
 
 int QubitContainer::size() { return _qubits.size(); }
 
-void QubitContainer::push_back(Qbit* qubit) { _qubits.push_back(qubit); }
+void QubitContainer::push_back(Qbit *qubit) { _qubits.push_back(qubit); }
 
-Qbit* QubitContainer::pop_back() {
-  Qbit* qubit = _qubits.back();
+Qbit *QubitContainer::pop_back() {
+  Qbit *qubit = _qubits.back();
   _qubits.pop_back();
   return qubit;
 }
 
-Qbit* QubitContainer::back() { return _qubits.back(); }
+Qbit *QubitContainer::back() { return _qubits.back(); }
 
-Qbit* QubitContainer::front() { return _qubits.front(); }
+Qbit *QubitContainer::front() { return _qubits.front(); }
 
-Qbit* QubitContainer::at(int index) { return _qubits.at(index); }
+Qbit *QubitContainer::at(int index) { return _qubits.at(index); }

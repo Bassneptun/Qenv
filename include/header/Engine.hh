@@ -12,6 +12,8 @@
 #include "Instructions.hh"
 #include "QubitClass.hh"
 
+extern const std::vector<std::string> non_mutative;
+
 class Engine {
  public:
   Engine(std::string path)
@@ -20,16 +22,17 @@ class Engine {
         it(bytecode.begin()) {}
   ~Engine() {}
 
-  void execute();
+  void execute(std::vector<std::string>);
   Maybe::iterator& operator++();
 
   void set_it(Maybe::iterator);
 
   Maybe::iterator& get_it();
 
-  void exe();
+  void exe(std::vector<std::string>);
+  void execute_new(std::vector<std::string>, Maybe::iterator it);
 
- private:
+ public:
   Instructions instructions;
 
   Maybe bytecode;

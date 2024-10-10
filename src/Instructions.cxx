@@ -7,18 +7,21 @@
 #include "../include/header/func_wrapper.hh"
 #include "../include/header/function.hh"
 
-std::function<uniform_return(uniform_input)> Instructions::operator[](
-    std::string name) {
+std::function<uniform_return(uniform_input)>
+Instructions::operator[](std::string name) {
   return this->_instructions[name];
 }
 
-std::vector<std::tuple<std::string, std::string>> Instructions::getArgs(
-    std::string name) {
+std::vector<std::tuple<std::string, std::string>>
+Instructions::getArgs(std::string name) {
   return this->arguments[name];
 }
 
 std::unordered_map<std::string, std::function<uniform_return(uniform_input)>>
     Instructions::_instructions{
+        {"FRE", std::bind(AG_functions::free, std::placeholders::_1)},
+        {"CPY", std::bind(AG_functions::copy, std::placeholders::_1)},
+        {"DCP", std::bind(AG_functions::dcopy, std::placeholders::_1)},
         {"DSW", std::bind(AG_functions::dshow, std::placeholders::_1)},
         {"DAL", std::bind(AG_functions::dalloc, std::placeholders::_1)},
         {"SHW", std::bind(AG_functions::show, std::placeholders::_1)},
@@ -73,7 +76,7 @@ std::unordered_map<std::string,
           {"Vars", "Vars"},
           {"String", "String"}}},
         {"DSW", {{"Qudit", "Qudit"}, {"String", "String"}}},
-        {"SHW", {{"Qubit", "Qubit"}, {"String", "String"}}},
+        {"SHW", {{"Qubit", "Qubit"}}},
         {"SET", {{"Qubit", "Qubit"}, {"Int", "Int"}, {"Int", "Int"}}},
         {"HAD", {{"Qubit", "Qubit"}}},
         {"CNT", {{"Qubit", "Qubit"}, {"Qubit", "Qubit"}, {"Qudit", "Qudit"}}},
@@ -114,4 +117,6 @@ std::unordered_map<std::string,
         {"DMES", {{"Qubit", "Qubit"}}},
         {"DCRK", {{"Qubit", "Qubit"}}},
         {"DGET", {{"Qubit", "Qubit"}}},
+        {"CPY", {{"Qubit", "Qubit"}, {"Qubit", "Qubit"}}},
+        {"DCY", {{"Qudit", "Qudit"}, {"Qubit", "Qubit"}}},
     };

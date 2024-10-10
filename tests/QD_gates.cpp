@@ -10,7 +10,7 @@
 using namespace arma;
 using namespace std::complex_literals;
 
-std::vector<std::complex<double>> to_vector(const cx_vec& in) {
+std::vector<std::complex<double>> to_vector(const cx_vec &in) {
   std::vector<std::complex<double>> temp;
   for (auto n : in) {
     temp.push_back(n);
@@ -20,18 +20,19 @@ std::vector<std::complex<double>> to_vector(const cx_vec& in) {
 
 const double TOLERANCE = 1e-5;
 
-std::string vector_to_string(const std::vector<std::complex<double>>& v) {
+std::string vector_to_string(const std::vector<std::complex<double>> &v) {
   std::string temp;
-  for (const auto& n : v) {
+  for (const auto &n : v) {
     temp += std::to_string(n.real()) + " " + std::to_string(n.imag()) + " ";
   }
   return temp;
 }
 
-bool vectors_are_close(const std::vector<std::complex<double>>& v1,
-                       const std::vector<std::complex<double>>& v2,
+bool vectors_are_close(const std::vector<std::complex<double>> &v1,
+                       const std::vector<std::complex<double>> &v2,
                        double tolerance) {
-  if (v1.size() != v2.size()) return false;
+  if (v1.size() != v2.size())
+    return false;
   for (size_t i = 0; i < v1.size(); ++i) {
     if (std::abs(v1[i] - v2[i]) > tolerance) {
       return false;
@@ -277,7 +278,7 @@ TEST(QUDITF, CRK) {
 }
 */
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

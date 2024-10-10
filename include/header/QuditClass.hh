@@ -5,19 +5,52 @@
 #include <memory>
 
 using namespace arma;
-
 using namespace std::complex_literals;
 
 class Qudit {
  public:
-  typedef cx_mat valsr_;
+  using valsr_ = cx_mat;
 
-  explicit Qudit(const cx_vec& values)
+  // Constructors
+  Qudit(const cx_vec& values)
       : values(std::make_unique<cx_vec>(values)), d(values.n_elem) {}
-  explicit Qudit() : values(std::make_unique<cx_vec>()), d(0) {}
-  explicit Qudit(std::unique_ptr<cx_vec> values)
-      : values(std::move(values)), d(values->n_elem) {}
+  Qudit() : values(std::make_unique<cx_vec>()), d(0) {}
+  Qudit(std::unique_ptr<cx_vec> values)
+      : values(std::move(values)), d(this->values->n_elem) {}
 
+  // Copy constructor (deep copy)
+  Qudit(const Qudit& other) 
+      : values(std::make_unique<cx_vec>(*other.values)), d(other.d) {}
+
+  // Move constructor
+  Qudit(Qudit&& other) noexcept
+      : values(std::move(other.values)), d(other.d) {
+      other.d = 0;  // Reset other's dimension
+  }
+
+  // Copy assignment operator (deep copy)
+  Qudit& operator=(const Qudit& other) {
+      if (this != &other) {
+          values = std::make_unique<cx_vec>(*other.values);
+          d = other.d;
+      }
+      return *this;
+  }
+
+  // Move assignment operator
+  Qudit& operator=(Qudit&& other) noexcept {
+      if (this != &other) {
+          values = std::move(other.values);
+          d = other.d;
+          other.d = 0;  // Reset other's dimension
+      }
+      return *this;
+  }
+
+  // Destructor
+  ~Qudit() = default;
+
+  // Example member functions
   valsr_ cnot(Qudit& other) noexcept;
   valsr_ haddamard() const;
   valsr_ pauliX() noexcept;
@@ -39,12 +72,13 @@ class Qudit {
   Qudit combine(Qudit& other) noexcept;
   int measure() const;
 
-  valsr_ getValues() const noexcept { return *this->values; }
-  cx_vec get() noexcept { return *this->values; }
+  // Accessors
+  valsr_ getValues() const noexcept { return valsr_(*this->values); }  // Changed to match declared type
+  cx_vec get() const noexcept { return *this->values; }
+  int get_d() const noexcept { return this->d; }
 
  private:
-  std::unique_ptr<cx_mat>
-      values;  // thou may be of any size. Size 2'd be kinda pointless tho...
+  std::unique_ptr<cx_vec> values;  // Use `cx_vec` consistently
   int d;
 };
 

@@ -17,16 +17,16 @@ using namespace std::complex_literals;
 class Qbit {
  public:
   typedef std::unique_ptr<cx_vec> vals;
-  explicit Qbit(const cx_vec& values)
+  Qbit(const cx_vec& values)
       : values(std::make_unique<cx_vec>(values)) {}
-  explicit Qbit(Qbit& other)
+  Qbit(Qbit& other)
       : values(std::make_unique<cx_vec>(*other.values)) {}
-  explicit Qbit() {
+  Qbit() {
     cx_vec tmp = {1. / std::sqrt(2), 1. / std::sqrt(2)};
     this->values = std::make_unique<cx_vec>(tmp);
   }
-  explicit Qbit(std::unique_ptr<cx_vec> values) : values(std::move(values)) {}
-  explicit Qbit(const Qbit& other)
+  Qbit(std::unique_ptr<cx_vec> values) : values(std::move(values)) {}
+  Qbit(const Qbit& other)
       : values(std::make_unique<cx_vec>(*other.values)) {}
   virtual ~Qbit() {}
 
@@ -68,9 +68,8 @@ class Qbit {
   cx_vec* getValues() const { return this->values.get(); }
   cx_vec get() const { return *this->values; }
 
-  Qbit& operator=(Qbit& other) {
-    this->values.swap(other.values);
-    return *this;
+  void operator=(Qbit other) {
+    this->values = std::move(other.values);
   }
 
   Qbit& custom(const cx_vec&);

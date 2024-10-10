@@ -13,7 +13,7 @@
 #include "func_wrapper.hh"
 
 class QB_functions {
- public:
+public:
   static uniform_return haddamard(uniform_input in);
 
   static uniform_return pauliX(uniform_input in);
@@ -49,10 +49,10 @@ class QB_functions {
   static uniform_return get(uniform_input in);
 
   static uniform_return cnot(uniform_input in);
-};  // namespace QB_functions
+}; // namespace QB_functions
 
 class QD_functions {
- public:
+public:
   static uniform_return haddamard(uniform_input in);
 
   static uniform_return cr(uniform_input in);
@@ -90,10 +90,10 @@ class QD_functions {
   static uniform_return crk(uniform_input in);
 
   static uniform_return get(uniform_input in);
-};  // namespace QD_functions
+}; // namespace QD_functions
 
 class AG_functions {
- public:
+public:
   static uniform_return qalloc(uniform_input in);
 
   static uniform_return show(uniform_input in);
@@ -107,6 +107,16 @@ class AG_functions {
   static uniform_return dalloc(uniform_input in);
 
   static uniform_return dshow(uniform_input in);
-};  // namespace AG_functions
+
+  static uniform_return copy(uniform_input in);
+
+  static uniform_return dcopy(uniform_input in);
+
+  static uniform_return free(uniform_input in);
+
+  static uniform_return dfree(uniform_input in);
+
+  static uniform_return save_state(uniform_input in);
+}; // namespace AG_functions
 
 #endif

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <armadillo>
 #include <cmath>
 #include <complex>
